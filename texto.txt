@@ -1,8 +1,22 @@
 podemos_ganarle_a_thanos :: Universo -> Bool
-podemos_ganarle_a_thanos universo = not (está_el_personaje "Thanos" universo) && not (tiene_thanos_todas_las_gemas u) 
-                                    && ((está_el_personaje "Thor" universo && está_el_objeto "StormBreaker" universo) || 
+podemos_ganarle_a_thanos universo = not (está_el_personaje "Thanos" universo) || if not (tiene_thanos_todas_las_gemas universo) 
+                                    then ((está_el_personaje "Thor" universo && está_el_objeto "StormBreaker" universo) || 
                                     (está_el_personaje "Wanda" universo && está_el_personaje "Visión" universo && 
-                                    en_posesion_de "Visión" ((posición_objeto "Gema de la Mente") "Gema de la Mente") && 
-                                    WandaMataAVision gema "Visión"))
+                                    en_posesion_de "Visión" (objeto_de_nombre "Gema de la Mente" universo))  && 
+                                    wandaMataAVision "Gema de la Mente" "Visión" universo) else False
 
-            where WandaMataAVision = fue_destruido ("Gema de la Mente") && not (está_vivo "Visión")
+wandaMataAVision :: String -> String -> Universo -> Bool
+wandaMataAVision gema vision universo = fue_destruido (objeto_de_nombre gema universo) && not (está_vivo (personaje_de_nombre vision universo))
+
+phil = Personaje (0,0) "Phil"
+mjölnir = Objeto (2,2) "Mjölnir"
+universo_sin_thanos = universo_con [phil] [mjölnir]
+universo_vacio = universo_con [] []
+thor = Personaje (0,0) "Thor"
+vision = Personaje (1,2) "Visión"
+storm = Objeto (4,5) "StormBreaker"
+wanda = Personaje (6,7) "Wanda"
+gemaDeLaMente = Objeto (5, 6) "Gema de la Mente"
+thanos = Personaje (6,8) "Thanos"
+universo_con_thor = universo_con [thor, thanos] [storm]
+universo_con_vision_y_gema = universo_con [wanda, Muere(vision), thanos] [(EsDestruido(Tomado((gemaDeLaMente) (vision)))), storm]
