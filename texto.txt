@@ -1,0 +1,8 @@
+podemos_ganarle_a_thanos :: Universo -> Bool
+podemos_ganarle_a_thanos universo = not (está_el_personaje "Thanos" universo) && not (tiene_thanos_todas_las_gemas u) 
+                                    && ((está_el_personaje "Thor" universo && está_el_objeto "StormBreaker" universo) || 
+                                    (está_el_personaje "Wanda" universo && está_el_personaje "Visión" universo && 
+                                    en_posesion_de "Visión" ((posición_objeto "Gema de la Mente") "Gema de la Mente") && 
+                                    WandaMataAVision gema "Visión"))
+
+            where WandaMataAVision = fue_destruido ("Gema de la Mente") && not (está_vivo "Visión")
