@@ -57,11 +57,11 @@ factorial x = x * factorial (x-1)
 cantDivisoresPrimos :: Int -> Int
 cantDivisoresPrimos x = contarDivPrimos (x 1 0)
     where
-        contarDivPrimos x div conteo | div > x = conteo
+        contarDivPrimos x div conteo | div > x                       = conteo
                                      | x mod div == 0 && esPrimo div = contarDivPrimos (x div+1 conteo+1)
-                                     | otherwise                        = contarDivPrimos (x div+1 conteo)
+                                     | otherwise                     = contarDivPrimos (x div+1 conteo)
 esPrimo :: Int -> Bool
-esPrimo x | x < 1 = False
+esPrimo x | x <= 1    = False
           | otherwise = not (esDivisible n 2)
     where esDivisible x y | y >= x         = False
                           | x `mod` y == 0 = True
@@ -98,7 +98,7 @@ difPromedio xs = head xs - promedio xs : difPromedio tail xs
 
 promedio :: [Float] -> Float
 promedio [] = 0
-promedio xs = sum xs / length xs
+promedio xs = sum xs / fromIntegral (length xs)
 
 
 -- c. 
@@ -123,6 +123,6 @@ negacionAB Bin i r d = Bin (negacionAB i) (not r) (negacionAB d)
 
 -- c. 
 productoAB :: AB Int -> Int
-productoAB Nil = 1
+productoAB Nil       = 1
 productoAB Bin i r d = productoAB i * r * productoAB d
 
