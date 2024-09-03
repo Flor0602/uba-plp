@@ -436,7 +436,7 @@ foldr1' f = foldr (\x rec -> f x rec) undefined
 
 -- Generacion infinita
 paresDeNat :: [(Int,Int)]
-paresDeNat = [(x, y) | s <- [1..], x <- [0..s], y <- [0..s], x + y == s]
+paresDeNat = [(x, y) | s <- [0..], x <- [0..s], y <- [0..s], x + y == s]
 
 -- Esa funcion no es util ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
 -- Ademas por las 3 leyes de generacion infinita, deberia haber solo un generador infinito.
