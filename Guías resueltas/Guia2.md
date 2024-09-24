@@ -99,6 +99,8 @@ curry (uncurry f) x y
 = f x y                 {def uncurry}
 ```
 
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
 ### Ejercicio 2
 Demostrar las siguientes igualdades utilizando el principio de extensionalidad funcional.
 ##### Principio de Extensionalidad Funcional
@@ -159,6 +161,7 @@ Por principio de extensionalidad funcional basta ver que:
 = h ((g . f) x)         (def .)
 = (h . (g . f)) x       (def .)
 ```
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 3
 Considerar las siguientes funciones y demostrar las propiedades.
@@ -212,34 +215,33 @@ Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
 
 #### II. ∀ xs::[a] . ∀ ys::[a] . length (append xs ys) = length xs + length ys
-Descripción del Ejercicio II.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+
 
 #### III. ∀ xs::[a] . ∀ x::a . [x]++xs = x:xs
 Descripción del Ejercicio III.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
 
 #### IV. ∀ xs::[a] . ∀ f::(a->b) . length (map f xs) = length xs
 Descripción del Ejercicio IV.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
 
 #### V. ∀ xs::[a] . ∀ p::a->Bool . ∀ e::a . ((elem e (filter p xs)) ⇒ (elem e xs)) (asumiendo Eq a)
 Descripción del Ejercicio V.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
 
 #### VI. ∀ xs::[a] . ∀ x::a . ponerAlFinal x xs = xs ++ (x:[])
 Descripción del Ejercicio VI.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
 
 #### VII. reverse = foldr (\x rec -> rec ++ (x:[])) []
 Descripción del Ejercicio VII.
 
-[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 #### VIII. ∀ xs::[a] . ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
 Descripción del Ejercicio VIII.
