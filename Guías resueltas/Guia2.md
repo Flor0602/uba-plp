@@ -1,6 +1,7 @@
 # Practica 2 - Razonamiento ecuacional e induccion estructural
+# Extensionalidad
 ### Ejercicio 1
-Sean las siguientes deniciones de funciones:
+Sean las siguientes definiciones de funciones:
 - intercambiar (x,y) = (y,x)
 - espejar (Left x) = Right x
   espejar (Right x) = Left x
