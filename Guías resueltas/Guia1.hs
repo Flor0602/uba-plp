@@ -435,17 +435,73 @@ foldr1' f = foldr (\x rec -> f x rec) undefined
 -- Si pongo error, me tira que no me matchean los tipos
 
 -- Generacion infinita
+-- Ejercicio 18
+-- Definir la lista infinita paresDeNat::[(Int,Int)], que contenga todos los pares de números naturales: (0,0), (0,1), (1,0), etc.
+
 paresDeNat :: [(Int,Int)]
 paresDeNat = [(x, y) | s <- [0..], x <- [0..s], y <- [0..s], x + y == s]
+
+{-
+Ejercicio 19
+Una tripla pitagórica es una tripla (a, b, c) de enteros positivos tal que a^2 + b^2 = c^2.
+La siguiente expresión intenta ser una definición de una lista (infinita) de triplas pitagóricas:
+Explicar por qué esta definición no es útil. Dar una definición mejor.
+-}
+
+pitagóricas :: [(Integer, Integer, Integer)]
+pitagóricas = [(a, b, c) | a <- [1..], b <-[1..], c <- [1..], a^2 + b^2 == c^2]
 
 -- Esa funcion no es util ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
 -- Ademas por las 3 leyes de generacion infinita, deberia haber solo un generador infinito.
 -- La lista trata de generar triplas infinitas dentro de otras triplas infinitas, lo cual es computacionalmente imposible y no converge en resultados útiles
+
 pitagoricas :: [(Integer, Integer, Integer)]
 pitagoricas = [(a, b, c) | c <- [1..], a <- [1..c-1], b <- [1..c-1], a * a + b * b == c * c]
+
+{-
+Ejercicio 20
+Escribir la función listasQueSuman :: Int -> [[Int]] que, dado un número natural n, devuelve todas las
+listas de enteros positivos (es decir, mayores o iguales que 1) cuya suma sea n. Para este ejercicio se permite
+usar recursión explícita. Pensar por qué la recursón utilizada no es estructural. (Este ejercicio no es de
+generación infinita, pero puede ser útil para otras funciones que generen listas infinitas de listas).
+-}
 
 listasQueSuman :: Int -> [[Int]]
 listasQueSuman 0 = [[]]
 listasQueSuman n | n > 0 = [x:xs | x <- [1..], xs <- listasQueSuman (n-x)]
                  | otherwise = []
 
+{-
+Ejercicio 21
+Definir en Haskell una lista que contenga todas las listas finitas de enteros positivos (esto es, con elementos
+mayores o iguales que 1).
+-}
+
+listasfinitas :: [[Int]]
+listasfinitas = concatMap [generarListasDeLongitud n | n <- [0..]]
+            where generarListasDeLongitud 0 = [[]]
+                  generarListasDeLongitud n = [ x:xs | x <- [1..], xs <- generarListasDeLongitud (n-1)]
+
+{-
+Ejercicio 22
+Dado el tipo de datos AIH a definido en el ejercicio 14:
+a) Definir la lista (infinita) de todos los AIH cuyas hojas tienen tipo (). Se recomienda definir una función
+auxiliar. Para este ejercicio se permite utilizar recursión explícita.
+b) Explicar por qué la recursión utilizada en el punto a) no es estructural.
+El tipo (), usualmente conocido como unit, tiene un único valor, denotado como ().
+-}
+
+aihUnitarios :: [AIH ()]
+aihUnitarios = concat [aihDeAltura n | n <- [0..]]
+  where
+    aihDeAltura 0 = [Hoja ()]
+    aihDeAltura n = [Nodo l r | l <- aihDeAltura (n-1), r <- aihDeAltura (n-1)]
+{-
+b) La recursión estructural ocurre cuando una función recursiva llama a sí misma con un 
+subproblema más pequeño derivado de la estructura de los datos de entrada, y la estructura de la recursión 
+sigue directamente la estructura de los datos. Por ejemplo, si tienes un árbol, la recursión estructural consiste en aplicar la recursión a los subárboles del nodo.
+En este caso, la recursión utilizada en el punto a) no es estructural porque estamos construyendo árboles de manera más compleja. 
+No estamos simplemente descomponiendo un árbol grande en árboles más pequeños, sino que estamos construyendo árboles de altura creciente, 
+y no hay una reducción directa en el tamaño del árbol en cada paso.
+Por lo tanto, la recursión no sigue estrictamente la estructura de los datos de entrada, ya que estamos generando árboles más grandes y más complejos en cada paso.
+-}
