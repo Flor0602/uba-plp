@@ -1,5 +1,5 @@
-## Practica 2 - Razonamiento ecuacional e induccion estructural
-# Ejercicio 1
+# Practica 2 - Razonamiento ecuacional e induccion estructural
+### Ejercicio 1
 Sean las siguientes deniciones de funciones:
 - intercambiar (x,y) = (y,x)
 - espejar (Left x) = Right x
