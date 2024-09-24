@@ -1,13 +1,18 @@
 # Práctica 2 - Razonamiento ecuacional e inducción estructural
+
 ## Extensionalidad
 
 - [Ejercicio 1](#ejercicio-1)
 - [Ejercicio 2](#ejercicio-2)
+## Inducción sobre listas
+
 - [Ejercicio 3](#ejercicio-3)
 - [Ejercicio 4](#ejercicio-4)
 - [Ejercicio 5](#ejercicio-5)
 - [Ejercicio 6](#ejercicio-6)
 - [Ejercicio 7](#ejercicio-7)
+## Otras estructuras de datos
+
 - [Ejercicio 8](#ejercicio-8)
 - [Ejercicio 9](#ejercicio-9)
 - [Ejercicio 10](#ejercicio-10)
@@ -156,7 +161,88 @@ Por principio de extensionalidad funcional basta ver que:
 ```
 
 ### Ejercicio 3
+Considerar las siguientes funciones y demostrar las propiedades.
+```haskell
+     length :: [a] -> Int
+{L0} length [] = 0
+{L1} length (x:xs) = 1 + length xs
 
+     duplicar :: [a] -> [a]
+{D0} duplicar [] = []
+{D1} duplicar (x:xs) = x : x : duplicar xs
 
+     append :: [a] -> [a] -> [a]
+{A0} append [] ys = ys
+{A1} append (x:xs) ys = x : append xs ys
 
+     (++) :: [a] -> [a] -> [a]
+{++} xs ++ ys = foldr (:) ys xs
+
+     ponerAlFinal :: a -> [a] -> [a]
+{P0} ponerAlFinal x = foldr (:) (x:[])
+
+     reverse :: [a] -> [a]
+{R0} reverse = foldl (flip (:)) []
+```
+#### I. ∀ xs::[a] . length (duplicar xs) = 2 * length xs
+```
+Por inducción de listas sobre xs necesito probar que:
+P(xs): length (duplicar xs) = 2 * length xs
+
+Caso base P([]):
+
+length (duplicar [])
+= length []                         {D0}
+= 0                                 {L0}
+= 2 * 0
+= 2 * length []                     {L0}
+
+Caso recursivo ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs):
+H.I.: length (duplicar xs) = 2 * length xs
+
+length (duplicar (x : xs)) 
+= length (x : x : duplicar xs)      (D1)
+= 1 + length (x : duplicar xs)      (L1)
+= 1 + 1 + length (duplicar xs)      (L1)
+= 2 + 2 * length xs                 (HI)
+= 2 * (1 + length xs)
+= 2 * length (x:xs)                 {L1}
+
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
+
+#### II. ∀ xs::[a] . ∀ ys::[a] . length (append xs ys) = length xs + length ys
+Descripción del Ejercicio II.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### III. ∀ xs::[a] . ∀ x::a . [x]++xs = x:xs
+Descripción del Ejercicio III.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### IV. ∀ xs::[a] . ∀ f::(a->b) . length (map f xs) = length xs
+Descripción del Ejercicio IV.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### V. ∀ xs::[a] . ∀ p::a->Bool . ∀ e::a . ((elem e (filter p xs)) ⇒ (elem e xs)) (asumiendo Eq a)
+Descripción del Ejercicio V.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### VI. ∀ xs::[a] . ∀ x::a . ponerAlFinal x xs = xs ++ (x:[])
+Descripción del Ejercicio VI.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### VII. reverse = foldr (\x rec -> rec ++ (x:[])) []
+Descripción del Ejercicio VII.
+
+[Volver al inicio](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+#### VIII. ∀ xs::[a] . ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
+Descripción del Ejercicio VIII.
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
