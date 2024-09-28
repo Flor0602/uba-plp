@@ -569,16 +569,93 @@ zip [] ys
 = []                                  (def const)
 = zip' [] ys                          (Z'0)
 
-Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
 H.I.: ∀ ys :: [b]. zip xs ys = zip' xs ys
-Qvq ∀ ys :: [b]. zip (y:xs) ys = zip' (y:xs) ys
+Qvq ∀ ys :: [b]. zip (x:xs) ys = zip' (x:xs) ys
 
-zip (y:xs) ys
-= foldr f (const []) (y:xs) ys
-= f y (foldr f (const []) xs) ys
-= 
-= 
+zip (x:xs) ys
+= foldr f (const []) (x:xs) ys         (Z0)
+= f y (foldr f (const []) xs) ys       (def foldr)
+= if null ys then [] else (x, head ys) : (foldr f (const []) xs (tail ys))     (def f)
+= if null ys then [] else (x, head ys) : (zip xs (tail ys))                    (Z0)
+= if null ys then [] else (x, head ys) : (zip' xs (tail ys))                   (HI)
+= zip' (x:xs) ys                                                               (Z'1)
+
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
 
+### Ejercicio 6
+Dadas las siguientes funciones, Indicar si las siguientes propiedades son verdaderas o falsas. Si son verdaderas, realizar una demostración. Si son falsas, presentar un contraejemplo.
+```haskell
+     nub :: Eq a => [a] -> [a]
+{N0} nub [] = []
+{N1} nub (x:xs) = x : filter (\y -> x /= y) (nub xs)
+
+     union :: Eq a => [a] -> [a] -> [a]
+{U0} union xs ys = nub (xs++ys)
+
+     intersect :: Eq a => [a] -> [a] -> [a]
+{I0} intersect xs ys = filter (\e -> elem e ys) xs
+```
+
+#### I. Eq a => ∀ xs::[a] . ∀ e::a . ∀ p::a -> Bool . elem e xs && p e = elem e (filter p xs)
+
+```
+Pendiente...
+Si Eq a = False, False implica cualquier cosa.
+Asumo que vale Eq a.
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀e :: a. ∀p :: a -> Bool. (elem e xs && p e) = elem e (filter p xs)
+
+Caso base: P([])
+
+<u>Lado izquierdo:</u>
+(elem e [] && p e)
+= (False && p e)                              (def elem)
+= False                                       (def &&)
+= elem e []                                   (def elem)
+= elem e (filter p [])                        (def filter)
+
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
+H.I.: ∀e :: a. ∀p :: a -> Bool. (elem e xs && p e) = elem e (filter p xs)
+Qvq ∀e :: a. ∀p :: a -> Bool. (elem e (x:xs) && p e) = elem e (filter p (x:xs))
+
+
+elem e (filter p (x:xs))
+= elem e (if p x then x : filter p xs else filter p xs)     (def filter)
+
+Lo separo en casos:
+1. Si p x = True
+
+= elem e (if True then x : filter p xs else filter p xs)
+= elem e (x : filter p xs)                                  {def if}
+= (e == x) || elem e (filter p xs)                          {def elem}
+= (e == x) || (elem e xs && p e)                            {HI}
+= (e == x || elem e xs) && (e == x || p e)                  {distributiva del ||}
+= elem e (x:xs) && (e == x || p e)                          {def elem}
+
+
+
+
+(elem e (x:xs) && p e)
+= (e == x || elem e xs) && p e               (def elem)
+
+Lo separo en casos:
+1. Si e == x = False
+
+= (e == x || elem e xs) && p e              
+= (False || elem e xs) && p e
+= elem e xs && p e                           (def ||)
+= elem e (filter p xs)                       (HI)
+
+2. Si e == x = True
+
+= (e == x || elem e xs) && p e
+= (True || elem e xs) && p e                   
+= True && p e                                (def ||)
+
+Si p x = True 
+```
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
