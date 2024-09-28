@@ -161,6 +161,7 @@ Por principio de extensionalidad funcional basta ver que:
 = h ((g . f) x)         (def .)
 = (h . (g . f)) x       (def .)
 ```
+
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 3
@@ -187,7 +188,7 @@ Considerar las siguientes funciones y demostrar las propiedades.
      reverse :: [a] -> [a]
 {R0} reverse = foldl (flip (:)) []
 ```
-**Nota**: en adelante, siempre que se necesite usar reverse, se podrá utilizar cualquiera de las dos definiciones, según se considere conveniente.
+**Nota**: en adelante, siempre que se necesite usar reverse, se podrá utilizar cualquiera de las dos definiciones, según se considere conveniente.
 
 #### I. ∀ xs::[a] . length (duplicar xs) = 2 * length xs
 ```
