@@ -187,7 +187,7 @@ Considerar las siguientes funciones y demostrar las propiedades.
      reverse :: [a] -> [a]
 {R0} reverse = foldl (flip (:)) []
 ```
-*Nota*: en adelante, siempre que se necesite usar reverse, se podrá utilizar cualquiera de las dos deniciones, según se considere conveniente.
+**Nota**: en adelante, siempre que se necesite usar reverse, se podrá utilizar cualquiera de las dos definiciones, según se considere conveniente.
 
 #### I. ∀ xs::[a] . length (duplicar xs) = 2 * length xs
 ```
