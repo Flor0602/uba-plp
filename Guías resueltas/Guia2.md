@@ -198,10 +198,10 @@ P(xs): length (duplicar xs) = 2 * length xs
 Caso base: P([])
 
 length (duplicar [])
-= length []                         {D0}
-= 0                                 {L0}
+= length []                         (D0)
+= 0                                 (L0)
 = 2 * 0
-= 2 * length []                     {L0}
+= 2 * length []                     (L0)
 
 Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
 H.I.: length (duplicar xs) = 2 * length xs
@@ -213,7 +213,7 @@ length (duplicar (x : xs))
 = 1 + 1 + length (duplicar xs)      (L1)
 = 2 + 2 * length xs                 (HI)
 = 2 * (1 + length xs)
-= 2 * length (x:xs)                 {L1}
+= 2 * length (x:xs)                 (L1)
 
 Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
@@ -393,7 +393,7 @@ reverse []
 = []                                    (def foldl)
 = foldr (\x rec -> rec ++ (x:[])) [] []
 
-Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
 H.I.: reverse xs = foldr (\x rec -> rec ++ (x:[])) [] xs
 Qvq reverse (y:xs) = foldr (\x rec -> rec ++ (x:[])) [] (y:xs)
 
@@ -458,7 +458,7 @@ head (reverse (ponerAlFinal x []))
 = head (x:[])                                       (def foldr)
 = x                                                 (def head)
 
-Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
 H.I.: ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
 Qvq ∀ x::a . head (reverse (ponerAlFinal x (y:xs))) = x
 
@@ -488,7 +488,7 @@ reverse ([] ++ ys)
 = reverse ys ++ []
 = reverse ys ++ reverse []
 
-Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
 H.I.: ∀ ys::[a]. reverse (xs ++ ys) = reverse ys ++ reverse xs
 Qvq ∀ ys::[a]. reverse ((y:xs) ++ ys) = reverse ys ++ reverse (y:xs)
 
@@ -523,7 +523,7 @@ head ([x] ++ ys)
 = x                                          (def head)
 = head([x])
 
-Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
 H.I.: ∀ ys::[a]. head (xs ++ ys) = head xs
 Qvq ∀ ys::[a]. head ((y:xs) ++ ys) = head (y:xs)
 
@@ -538,5 +538,43 @@ head ((y:xs) ++ ys)
 Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
 
+
+### Ejercicio 4
+
+### Ejercicio 5
+Dadas las siguientes funciones, demostrar que zip = zip' utilizando inducción estructural y el principio de extensionalidad.
+```haskell
+     zip :: [a] -> [b] -> [(a,b)]
+{Z0} zip = foldr (\x rec ys -> if null ys then [] else (x, head ys) : rec (tail ys)) (const [])
+
+      zip' :: [a] -> [b] -> [(a,b)]
+{Z'0} zip' [] ys = []
+{Z'1} zip' (x:xs) ys = if null ys then [] else (x, head ys) : zip' xs (tail ys)
+```
+```
+Por el [principio de extensionalidad funcional](#principio-de-extensionalidad-funcional) basta ver que:
+∀ xs :: [a]. ∀ ys :: [b]. zip xs ys = zip' xs ys
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs :: [a]. P(xs): ∀ ys :: [b]. zip xs ys = zip' xs ys
+
+Caso base: P([])
+
+zip [] ys
+= foldr (\x rec ys -> if null ys then [] else (x, head ys) : rec (tail ys)) (const []) [] ys     (Z0)
+= const [] ys                         (def foldr)
+= []                                  (def const)
+= zip' [] ys                          (Z'0)
+
+Caso recursivo: ∀y :: a. ∀xs :: [a]. P(xs) ⇒ P(y:xs)
+H.I.: ∀ ys :: [b]. zip xs ys = zip' xs ys
+Qvq ∀ ys :: [b]. zip (y:xs) ys = zip' (y:xs) ys
+
+zip (y:xs) ys
+= foldr f (const []) (y:xs) ys
+= f y (foldr f (const []) xs) ys
+= 
+= 
+```
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
