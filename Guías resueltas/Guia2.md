@@ -538,8 +538,11 @@ head ((y:xs) ++ ys)
 Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
 
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 4
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 5
 Dadas las siguientes funciones, demostrar que zip = zip' utilizando inducción estructural y el principio de extensionalidad.
@@ -576,5 +579,6 @@ zip (y:xs) ys
 = 
 = 
 ```
+
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
