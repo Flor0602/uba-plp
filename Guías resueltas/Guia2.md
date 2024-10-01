@@ -316,7 +316,7 @@ Qvq ∀ p::a->Bool . ∀ e::a . ((elem e (filter p (x:xs))) ⇒ (elem e (x:xs)))
 elem e (filter p (x:xs))
 = elem e (if p x then x:filter p xs else filter p xs)     (def filter)
 
-Lo separo en casos:
+Por extensionalidad de booleanos, analizo los casos por separado:
 1. Si p x = False
 
 elem e (filter p xs)
@@ -601,7 +601,6 @@ Dadas las siguientes funciones, Indicar si las siguientes propiedades son verdad
 #### I. Eq a => ∀ xs::[a] . ∀ e::a . ∀ p::a -> Bool . elem e xs && p e = elem e (filter p xs)
 
 ```
-Pendiente...
 Si Eq a = False, False implica cualquier cosa.
 Asumo que vale Eq a.
 
@@ -610,7 +609,6 @@ Por inducción de listas sobre xs necesito probar que:
 
 Caso base: P([])
 
-<u>Lado izquierdo:</u>
 (elem e [] && p e)
 = (False && p e)                              (def elem)
 = False                                       (def &&)
@@ -621,41 +619,463 @@ Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
 H.I.: ∀e :: a. ∀p :: a -> Bool. (elem e xs && p e) = elem e (filter p xs)
 Qvq ∀e :: a. ∀p :: a -> Bool. (elem e (x:xs) && p e) = elem e (filter p (x:xs))
 
-
+Lado derecho:
 elem e (filter p (x:xs))
-= elem e (if p x then x : filter p xs else filter p xs)     (def filter)
+= elem e (if p x then x : filter p xs else filter p xs)  (def filter)
 
-Lo separo en casos:
-1. Si p x = True
+Por extensionalidad de booleanos, analizo los casos por separado:
 
-= elem e (if True then x : filter p xs else filter p xs)
-= elem e (x : filter p xs)                                  {def if}
-= (e == x) || elem e (filter p xs)                          {def elem}
-= (e == x) || (elem e xs && p e)                            {HI}
-= (e == x || elem e xs) && (e == x || p e)                  {distributiva del ||}
-= elem e (x:xs) && (e == x || p e)                          {def elem}
+Caso 1: Si p x = True
+elem e (if True then x : filter p xs else filter p xs)
+= elem e (x : filter p xs)                                (def if)
+= (e == x) || elem e (filter p xs)                        (def elem)
+= (e == x) || (elem e xs && p e)                          (HI)
+= (e == x || elem e xs) && (e == x || p e)                (distributiva del ||)
+= elem e (x:xs) && (e == x || p e)                        (def elem)
 
+Lado izquierdo:
+elem e (x:xs) && p e
+= (e == x || elem e xs) && p e                            (def elem)
 
+Por extensionalidad de booleanos, analizo los casos por separado:
 
-
-(elem e (x:xs) && p e)
-= (e == x || elem e xs) && p e               (def elem)
-
-Lo separo en casos:
-1. Si e == x = False
-
-= (e == x || elem e xs) && p e              
+Caso 1.1: Si e == x = False
+(e == x || elem e xs) && p e
 = (False || elem e xs) && p e
-= elem e xs && p e                           (def ||)
-= elem e (filter p xs)                       (HI)
+= elem e xs && p e
+= elem e (filter p xs)                                    (HI)
 
-2. Si e == x = True
+Caso 1.2: Si e == x = True
+(e == x || elem e xs) && p e
+= (True || elem e xs) && p e
+= True && p e                                             (def ||)
+Como e == x y estoy en el caso 1 donde p x = True queda:
+= True
 
+Caso 2: Si p x = False
+elem e (filter p (x:xs))
+= elem e (filter p xs)
+
+Lado izquierdo:
+elem e (x:xs) && p e
 = (e == x || elem e xs) && p e
-= (True || elem e xs) && p e                   
-= True && p e                                (def ||)
 
-Si p x = True 
+Lo separo en dos subcasos:
+
+Subcaso 2.1: Si e == x
+Si e == x, entonces p x = False, lo que implica que p e = False.
+Entonces, ambos lados son False.
+
+Subcaso 2.2: Si e == x = False
+(False || elem e xs) && p e = elem e xs && p e
+elem e xs && p e = elem e (filter p xs)
+Entonces ambos lados coinciden.
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ xs :: [a]. 
 ```
+
+#### II. Eq a => ∀ xs::[a] . ∀ e::a . elem e xs = elem e (nub xs)
+```
+Si Eq a = False, False implica cualquier cosa.
+Asumo que vale Eq a.
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ e::a . elem e xs = elem e (nub xs)
+
+Caso base: P([])
+
+elem e []
+= False                                   (def elem)
+= elem e []                               (N0)
+= elem e (nub [])
+
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
+H.I.: ∀ e::a . elem e xs = elem e (nub xs)
+Qvq ∀ e::a . elem e (x:xs) = elem e (nub (x:xs))
+
+Lado izquierdo:
+elem e (x:xs)
+= e == x || elem e xs
+
+Lado derecho:
+elem e (nub (x:xs))
+= elem e (x : filter (\y -> x /= y) (nub xs))          (N1)
+= e == x || elem e (filter (\y -> x /= y) (nub xs))    (def elem)
+
+Por extensionalidad de booleanos, analizo los casos por separado:
+
+1. Si e == x = True
+Lado izquierdo:
+= e == x || elem e xs
+= True || elem e xs
+
+Lado derecho:
+= e == x || elem e (filter (\y -> x /= y) (nub xs))    (def elem)
+= True || ...
+= True
+
+2. Si e == x = False
+Lado izquierdo:
+= e == x || elem e xs
+= False || elem e xs
+= elem e xs
+
+Lado derecho:
+= e == x || elem e (filter (\y -> x /= y) (nub xs))    (def elem)
+= False || elem e (filter (\y -> x /= y) (nub xs))
+= elem e (filter (\y -> x /= y) (nub xs))
+
+Qvq elem e xs = elem e (filter (\y -> x /= y) (nub xs))
+elem e xs = elem e (filter (\y -> x /= y) (nub xs)
+elem e xs = elem e (nub xs) && (\y -> x /= y) e      (uso el 6.I)
+Como estoy en el donde e == x = False, la condición "(\y -> x /= y) e" se cumple trivialmente. Y por la conjunción de booleanos, True && cualquier cosa = cualquier cosa.
+elem e xs = elem e (nub xs)
+elem e xs = elem e xs                         (HI)                          
+Entonces ambos lados coinciden.
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
+
+#### III. Eq a => ∀ xs::[a] . ∀ ys::[a] . ∀ e::a . elem e (union xs ys) = (elem e xs) || (elem e ys)
+```
+Si Eq a = False, False implica cualquier cosa.
+Asumo que vale Eq a.
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ e::a . elem e (union xs ys) = (elem e xs) || (elem e ys)
+
+Caso base: P([])
+
+elem e (union [] ys)
+= elem e (nub ([] ++ ys))                 (U0)
+= elem e ys
+= False || elem e ys                                  
+= elem e [] || elem e ys  
+
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
+H.I.: ∀ e::a . elem e (union xs ys) = (elem e xs) || (elem e ys)
+Qvq ∀ e::a . elem e (union (x:xs) ys) = (elem e (x:xs)) || (elem e ys)
+
+Lado izquierdo:
+elem e (union (x:xs) ys)
+= elem e (nub ((x:xs) ++ ys))                                  (U0)
+= elem e (nub (x : (xs ++ ys)))                                (def ++) 
+= elem e (x : filter (\y -> x /= y) (nub (xs++ys)))            (N1)
+= e == x || elem e (filter (\y -> x /= y) (nub (xs ++ ys)))    (def elem)
+
+Lado derecho:
+(elem e (x:xs)) || (elem e ys)
+= e == x || elem e xs || elem e ys                             (def elem)
+
+Por extensionalidad de booleanos, analizo los casos por separado:
+
+1. Si e == x = True
+Lado izquierdo:
+= e == x || elem e (filter (\y -> x /= y) (nub (xs ++ ys)))
+= True || ...
+= True                       
+
+Lado derecho:
+= e == x || elem e xs || elem e ys
+= True || ... || ...
+= True
+
+2. Si e == x = False
+Lado izquierdo:
+= e == x || elem e (filter (\y -> x /= y) (nub (xs ++ ys)))
+= False || elem e (filter (\y -> x /= y) (nub (xs ++ ys)))
+= elem e (filter (\y -> x /= y) (nub (xs ++ ys)))
+= elem e (nub (xs ++ ys)) && (\y -> x /= y) e                    (uso el 6.I)
+Como estoy en el donde e == x = False, la condición "(\y -> x /= y) e" se cumple trivialmente. Y por la conjunción de booleanos, True && cualquier cosa = cualquier cosa.
+= elem e (nub (xs ++ ys))
+= elem e (union xs ys)                                   (U0)
+= (elem e xs) || (elem e ys)                             (HI)
+
+Lado derecho:
+= e == x || elem e xs || elem e ys
+= False || elem e xs || elem e ys
+= elem e xs || elem e ys
+Entonces ambos lados coinciden.
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
+
+#### IV. Pendiente... Eq a => ∀ xs::[a] . ∀ ys::[a] . ∀ e::a . elem e (intersect xs ys) = (elem e xs) && (elem e ys)
+```
+(Es parecido al anterior pero con algunas cosas mas)
+Si Eq a = False, False implica cualquier cosa.
+Asumo que vale Eq a.
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ ys::[a] . ∀ e::a . elem e (intersect xs ys) = (elem e xs) && (elem e ys)
+
+Caso base: P([])
+
+elem e (intersect [] ys)
+= elem e (filter (\e -> elem e ys) [])               (I0)
+= elem e []                                          (def filter)
+= False
+= False && (elem e ys)
+= (elem e []) && (elem e ys)
+
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
+H.I.: ∀ ys::[a] . ∀ e::a . elem e (intersect xs ys) = (elem e xs) && (elem e ys)
+Qvq ∀ ys::[a] . ∀ e::a . elem e (intersect (x:xs) ys) = (elem e (x:xs)) && (elem e ys)
+
+Lado izquierdo:
+elem e (intersect (x:xs) ys)
+= elem e (filter (\e -> elem e ys) (x:xs))                (I0)
+= elem e (if p x then x : filter p xs else filter p xs)   (def filter)
+
+Lado derecho:
+(elem e (x:xs)) && (elem e ys)
+= e == x || elem e xs || elem e ys                        (def elem)
+
+Por extensionalidad de booleanos, analizo los casos por separado:
+
+1. Si p x = True
+Lado izquierdo:
+= elem e (if p x then x : filter p xs else filter p xs)   (def filter)
+= elem e (x : filter p xs)
+= (e == x) || elem e (filter p xs)                        (def elem)                   
+
+Analizo los subcasos:
+1.1 Si e == x = True
+= (e == x) || elem e (filter p xs)                        (def elem)  
+
+
+2. Si p x = False
+Lado izquierdo:
+= elem e (if p x then x : filter p xs else filter p xs)   (def filter)
+= elem e (filter p xs)
+= 
+
+Lado derecho:
+
+
+2. Si e == x = False
+Lado izquierdo:
+
+
+Lado derecho:
+
+Entonces ambos lados coinciden.
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
+#### V. Eq a => ∀ xs::[a] . ∀ ys::[a] . length (union xs ys) = length xs + length ys
+```
+Contraejemplo:
+Sea xs = [1,2] e ys = [3,4]
+Entonces union xs ys = [1,2,3] y length (union xs ys) = 3
+Pero
+length xs = 2
+length ys = 2
+
+Por lo tanto,
+length (union xs ys) = length xs + length ys
+3 = 2 + 2
+¡¡¡Absurdo!!! 
+```
+
+#### VI. Eq a => ∀ xs::[a] . ∀ ys::[a] . length (union xs ys) ≤ length xs + length ys
+```
+Si Eq a = False, False implica cualquier cosa.
+Asumo que vale Eq a.
+
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ ys::[a] . length (union xs ys) ≤ length xs + length ys
+
+Caso base: P([])
+
+length (union [] ys) ≤ length [] + length ys
+= length (nub ([] ++ ys)) ≤ 0 + length ys                 (U0 y def length)
+= length (nub ys) ≤ length ys 
+
+Caso recursivo: ∀x :: a. ∀xs :: [a]. P(xs) ⇒ P(x:xs)
+H.I.: ∀ ys::[a] . length (union xs ys) ≤ length xs + length ys
+Qvq ∀ ys::[a] . length (union (x:xs) ys) ≤ length (x:xs) + length ys
+
+length (union (x:xs) ys) ≤ length (x:xs) + length ys
+= length (nub ((x:xs)++ys)) ≤ 1 + length xs + length ys
+= length (nub (x:(xs++ys))) ≤ 1 + length xs + length ys
+= length (x : filter (\y -> x /= y) (nub (xs++ys))) ≤ 1 + length xs + length ys
+= 1 + length (filter (\y -> x /= y) (nub (xs++ys))) ≤ 1 + length xs + length ys
+= length (filter (\y -> x /= y) (nub (xs++ys))) ≤ length xs + length ys
+= length (union xs ys) ≤ length xs + length ys
+Esto vale por la hipotesis inductiva.
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 7
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 8
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 9
+
+Dadas las funciones altura y cantNodos definidas en la práctica 1 para árboles binarios, demostrar la siguiente propiedad: ∀ t :: AB a . altura t ≤ cantNodos t
+
+```haskell
+data AB a = Nil | Bin (AB a) a (AB a) deriving (Show, Eq)
+
+foldAB :: b -> (b -> a -> b -> b) -> AB a -> b
+foldAB cNil cBin arbol = case arbol of
+    Nil -> cNil
+    Bin i r d -> cBin (rec i) r (rec d)
+    where rec = foldAB cNil cBin
+
+altura :: AB a -> Int
+altura = foldAB 0 (\ri _ rd -> 1+ max ri rd)
+
+cantNodos :: AB a -> Int
+cantNodos = foldAB 0 (\ri _ rd -> 1+ ri + rd)
+```
+```
+Utilizo induccion estructural en arboles binarios.
+∀ t :: AB a. P(t): altura t ≤ cantNodos t
+
+Caso base: P(Nil)
+
+altura Nil
+= foldAB 0 f Nil
+= 0
+≤ 0
+= foldAB 0 g Nil
+= cantNodos Nil
+
+Caso recursivo: ∀i :: AB a. ∀r :: a. ∀d :: AB a. P(i) ∧ P(d) ⇒ P(Bin i r d)
+H.I.:
+∀ i :: AB a. P(i): altura i ≤ cantNodos i.
+∀ d :: AB a. P(d): altura d ≤ cantNodos d.
+Qvq ∀ t :: AB a. P(Bin i r d): altura (Bin i r d) ≤ cantNodos (Bin i r d).
+
+altura (Bin i r d)
+= foldAB 0 (\ri _ rd -> 1+ max ri rd) (Bin i r d)               (def altura)
+= f (foldAB 0 f i) r (foldAB 0 f d)                             (def foldAB)
+= 1 + max (foldAB 0 f i) (foldAB 0 f d)                         (regla beta)
+= 1 + max (altura i) (altura d)
+≤ 1 + max (cantNodos i) (cantNodos d)                           (HI)
+≤ 1 + (cantNodos i) + (cantNodos d)                             (regla beta)
+= g (cantNodos i) r (cantNodos d)                               (def foldAB)
+= foldAB 0 g (Bin i r d)                                        (def cantNodos)
+= cantNodos (Bin i r d)
+
+Por lo tanto, la propiedad vale para ∀ t :: AB a.
+```
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 10
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 11
+
+[Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
+
+### Ejercicio 12
+Dados el tipo Polinomio definido en la práctica 1 y las siguientes funciones, demostrar las siguientes propiedades. 
+
+```haskell
+data Polinomio a = X | Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
+
+derivado :: Num a => Polinomio a -> Polinomio a
+derivado poli = case poli of
+                    X -> Cte 1
+                    Cte _ -> Cte 0
+                    Suma p q -> Suma (derivado p) (derivado q)
+                    Prod p q -> Suma (Prod (derivado p) q) (Prod (derivado q) p)
+
+sinConstantesNegativas :: Num a => Polinomio a -> Polinomio a
+sinConstantesNegativas = foldPoli True (>=0) (&&) (&&)
+
+esRaiz :: Num a => a -> Polinomio a -> Bool
+esRaiz n p = evaluar n p == 0
+```
+
+#### I. Num a => ∀ p::Polinomio a . ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
+
+```
+Si Num a = False, False implica cualquier cosa.
+Asumo que vale Num a.
+
+Utilizo inducción estructural sobre polinomios, necesito ver que:
+∀ p::Polinomio a. P(p): ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
+
+Casos base:
+- P(X)
+
+esRaiz r X ⇒ esRaiz r (Prod X q)
+= evaluar r X == 0 ⇒ evaluar r (Prod X q) == 0
+= r == 0 ⇒ (evaluar r X * evaluar r q) == 0
+= r == 0 ⇒ (evaluar r X * evaluar r q) == 0
+= r == 0 ⇒ (r * evaluar r q) == 0
+
+Si r == 0 = True, entonces
+0 == 0 ⇒ (0 * evaluar 0 q) == 0
+True ⇒ 0 == 0
+True ⇒ True = True
+
+Si r == 0 = False, entonces
+False ⇒ cualquier cosa
+
+- P(Cte a)
+
+esRaiz r (Cte a) ⇒ esRaiz r (Prod (Cte a) q)
+= evaluar r (Cte a) == 0 ⇒ (evaluar r (Cte a) * evaluar r q) == 0
+= a == 0 ⇒ (a * evaluar r q) == 0
+
+Si a == 0 = True, entonces
+0 == 0 ⇒ (0 * evaluar r q) == 0
+True ⇒ 0 == 0
+True ⇒ True = True
+
+Si a == 0 = False, entonces
+False ⇒ cualquier cosa
+
+Caso recursivo:
+- ∀ p, s::Polinomio a. ∀ r::a . (P(p) y P(s)) ⇒ P(Suma p s)
+H.I.:
+P(p): ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
+P(s): ∀ q::Polinomio a . ∀ r::a . (esRaiz r s ⇒ esRaiz r (Prod s q))
+
+esRaiz r (Suma p s) ⇒ esRaiz r (Prod (Suma p s) q)
+= evaluar r (Suma p s) == 0 ⇒ (evaluar r (Suma p s) * evaluar r q) == 0
+= (evaluar r p + evaluar r s) == 0  ⇒ ((evaluar r p + evaluar r s) * evaluar r q) == 0
+
+No sé si está bien...
+Si evaluar r p == 0, i.e. esRaiz r p ⇒ esRaiz r (Prod p q)
+= (0 + evaluar r s) == 0  ⇒ ((0 + evaluar r s) * evaluar r q) == 0
+y si evaluar r s == 0, i.e. esRaiz r s ⇒ esRaiz r (Prod s q)
+= (0 + 0) == 0  ⇒ ((0 + 0) * evaluar r q) == 0
+Queda:
+= True ⇒ 0 == 0
+= True
+
+Lo mismo para P(Prod p q)
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
+```
+
+#### II. Num a => ∀ p::Polinomio a . ∀ k::a . ∀ e::a . evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
+
+
+#### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
+
+#### IV. La recursión utilizada en la definición de la función derivado ¿es estructural, primitiva o ninguna de las dos?
+
+
+
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
