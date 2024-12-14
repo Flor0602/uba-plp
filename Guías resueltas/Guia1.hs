@@ -1,5 +1,9 @@
--- Práctica N° 1 - Programación Funcional
--- Currificación y tipos
+-- ============================ PRACTICA 1 ===========================
+--              🌟🌟🌟 PROGRAMACIÓN FUNCIONAL 🌟🌟🌟
+-- ====================================================================
+--                       CURRIFICACIÓN Y TIPOS
+-- ====================================================================
+
 -- Ejercicio 1 - Considerar las siguientes definiciones de funciones:
 -- i. ¿Cuál es el tipo de cada función? (Suponer que todos los números son de tipo Float).
 
@@ -56,7 +60,10 @@ uncurry' f (a,b) = f a b
 -- Si quisiéramos una función curryN que funcione para cualquier número de argumentos, nos enfrentaríamos a la limitación de que Haskell requiere que el número de argumentos de una función esté determinado en tiempo de compilación. 
 -- Es decir, no se puede definir una función curryN con un tipo genérico como: curryN :: ((a, b, c, ...) -> z) -> a -> b -> c -> ... -> z
 
--- Esquemas de recursion
+-- ====================================================================
+--                      ESQUEMAS DE RECURSIÓN
+-- ====================================================================
+
 -- Ejercicio 3
 -- i. Redefinir usando foldr las funciones sum, elem, (++), filter y map.
 sum' :: [Int] -> Int
@@ -223,7 +230,10 @@ sumaMat :: [[Int]] -> [[Int]] -> [[Int]]
 sumaMat = zipWith (zipWith (+))
 
 
--- Otras estructuras de datos
+-- ====================================================================
+--                     OTRAS ESTRUCTURAS DE DATOS
+-- ====================================================================
+
 {-
 En esta sección se permite (y se espera) el uso de recursión explícita únicamente para la definición de esquemas
 de recursión.
@@ -434,9 +444,12 @@ foldr1' :: (a -> b -> b) -> [a] -> b
 foldr1' f = foldr (\x rec -> f x rec) undefined
 -- Si pongo error, me tira que no me matchean los tipos
 
--- Generacion infinita
+-- ====================================================================
+--                       GENERACIÓN INFINITA
+-- ====================================================================
+
 -- Ejercicio 18
--- Definir la lista infinita paresDeNat::[(Int,Int)], que contenga todos los pares de números naturales: (0,0), (0,1), (1,0), etc.
+-- Definir la lista infinita paresDeNat::[(Int,Int)], que contenga todos los pares de números naturales: (0,0), (0,1), (1,0), etc.
 
 paresDeNat :: [(Int,Int)]
 paresDeNat = [(x, y) | s <- [0..], x <- [0..s], y <- [0..s], x + y == s]
@@ -444,14 +457,14 @@ paresDeNat = [(x, y) | s <- [0..], x <- [0..s], y <- [0..s], x + y == s]
 {-
 Ejercicio 19
 Una tripla pitagórica es una tripla (a, b, c) de enteros positivos tal que a^2 + b^2 = c^2.
-La siguiente expresión intenta ser una definición de una lista (infinita) de triplas pitagóricas:
-Explicar por qué esta definición no es útil. Dar una definición mejor.
+La siguiente expresión intenta ser una definición de una lista (infinita) de triplas pitagóricas:
+Explicar por qué esta definición no es útil. Dar una definición mejor.
 -}
 
 pitagóricas :: [(Integer, Integer, Integer)]
 pitagóricas = [(a, b, c) | a <- [1..], b <-[1..], c <- [1..], a^2 + b^2 == c^2]
 
--- Esa funcion no es util ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
+-- Esa funciÓn no es Útil ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
 -- Ademas por las 3 leyes de generacion infinita, deberia haber solo un generador infinito.
 -- La lista trata de generar triplas infinitas dentro de otras triplas infinitas, lo cual es computacionalmente imposible y no converge en resultados útiles
 
@@ -463,7 +476,7 @@ Ejercicio 20
 Escribir la función listasQueSuman :: Int -> [[Int]] que, dado un número natural n, devuelve todas las
 listas de enteros positivos (es decir, mayores o iguales que 1) cuya suma sea n. Para este ejercicio se permite
 usar recursión explícita. Pensar por qué la recursón utilizada no es estructural. (Este ejercicio no es de
-generación infinita, pero puede ser útil para otras funciones que generen listas infinitas de listas).
+generación infinita, pero puede ser útil para otras funciones que generen listas infinitas de listas).
 -}
 
 listasQueSuman :: Int -> [[Int]]
@@ -473,7 +486,7 @@ listasQueSuman n | n > 0 = [x:xs | x <- [1..], xs <- listasQueSuman (n-x)]
 
 {-
 Ejercicio 21
-Definir en Haskell una lista que contenga todas las listas finitas de enteros positivos (esto es, con elementos
+Definir en Haskell una lista que contenga todas las listas finitas de enteros positivos (esto es, con elementos
 mayores o iguales que 1).
 -}
 
@@ -484,8 +497,8 @@ listasfinitas = concatMap [generarListasDeLongitud n | n <- [0..]]
 
 {-
 Ejercicio 22
-Dado el tipo de datos AIH a definido en el ejercicio 14:
-a) Definir la lista (infinita) de todos los AIH cuyas hojas tienen tipo (). Se recomienda definir una función
+Dado el tipo de datos AIH a definido en el ejercicio 14:
+a) Definir la lista (infinita) de todos los AIH cuyas hojas tienen tipo (). Se recomienda definir una función
 auxiliar. Para este ejercicio se permite utilizar recursión explícita.
 b) Explicar por qué la recursión utilizada en el punto a) no es estructural.
 El tipo (), usualmente conocido como unit, tiene un único valor, denotado como ().

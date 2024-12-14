@@ -1,4 +1,7 @@
--- Pre-práctica de programación funcional
+-- ============================ PRE-PRÁCTICA ===========================
+--             🌟🌟🌟 REPASO DE PROGRAMACIÓN FUNCIONAL 🌟🌟🌟
+-- ====================================================================
+
 -- Ejercicio 1 : Dar el tipo y describir el comportamiento de 
 -- las funciones del módulo Prelude de Haskell.
 

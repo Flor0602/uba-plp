@@ -1,4 +1,4 @@
-# Holaa :)
+# Holaa 👩‍💻
 
 ## Guía de ejercicios
   - [Práctica 0:](https://github.com/Flor0602/Paradigmas-de-programaci-n-/blob/main/Gu%C3%ADas%20resueltas/Guia0.hs)  Repaso de programación funcional
@@ -16,7 +16,7 @@
 
 ## Clases prácticas
 
-## Parciales
+## Parciales resueltos
 
 ## Trabajos prácticos (solo enunciados)
 

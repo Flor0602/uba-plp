@@ -1,4 +1,4 @@
-# Práctica 3 - Demostración en lógica proposicional
+# Práctica 3 - Demostración en lógica proposicional 
 
 ## Semántica
 
