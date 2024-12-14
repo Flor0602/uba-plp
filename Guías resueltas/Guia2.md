@@ -7,16 +7,16 @@
 ## Inducción sobre listas
 
 - [Ejercicio 3](#ejercicio-3)
-- [Ejercicio 4](#ejercicio-4)
+- [Ejercicio 4 falta hacer](#ejercicio-4)
 - [Ejercicio 5](#ejercicio-5)
-- [Ejercicio 6](#ejercicio-6)
-- [Ejercicio 7](#ejercicio-7)
+- [Ejercicio 6 iv terminar](#ejercicio-6)
+- [Ejercicio 7 falta hacer](#ejercicio-7)
 ## Otras estructuras de datos
 
-- [Ejercicio 8](#ejercicio-8)
+- [Ejercicio 8 falta hacer](#ejercicio-8)
 - [Ejercicio 9](#ejercicio-9)
-- [Ejercicio 10](#ejercicio-10)
-- [Ejercicio 11](#ejercicio-11)
+- [Ejercicio 10 falta hacer](#ejercicio-10)
+- [Ejercicio 11 falta hacer](#ejercicio-11)
 - [Ejercicio 12](#ejercicio-12)
 
 
@@ -1069,8 +1069,13 @@ Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
 ```
 
 #### II. Num a => ∀ p::Polinomio a . ∀ k::a . ∀ e::a . evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
+```
+Si Num a = False, False implica cualquier cosa.
+Asumo que vale Num a.
 
+Utilizo inducción estructural sobre polinomios, necesito ver que:
 
+```
 #### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
 
 #### IV. La recursión utilizada en la definición de la función derivado ¿es estructural, primitiva o ninguna de las dos?

@@ -5,40 +5,40 @@
 -- Ejercicio 1 : Dar el tipo y describir el comportamiento de 
 -- las funciones del módulo Prelude de Haskell.
 
-null :: Foldable t => t a -> Bool
-null :: [a] -> Bool
+-- null :: Foldable t => t a -> Bool
+-- null :: [a] -> Bool
 -- Se pregunta si [a] es vacía o no.
 
-head :: [a] -> a
+-- head :: [a] -> a
 -- Es el primer elemento de la lista.
 
-tail :: [a] -> [a]
+-- tail :: [a] -> [a]
 -- Es la lista original sin su primer elemento.
 
-init :: [a] -> [a]
+-- init :: [a] -> [a]
 -- Devuelve la lista original eliminando su último elemento.
 
-last :: [a] -> a
+-- last :: [a] -> a
 -- Es el último elemento de la lista.
 
-take :: Int -> [a] -> [a]
+-- take :: Int -> [a] -> [a]
 -- Devuelve la lista de los primeros n elementos de la lista original.
 
-drop :: Int -> [a] -> [a]
+-- drop :: Int -> [a] -> [a]
 -- Borra los primeros n elementos de la lista original.
 
-(++) :: [a] -> [a] -> [a]
+-- (++) :: [a] -> [a] -> [a]
 -- Concatena/junta dos listas en una.
 
-concat :: Foldable t => t [a] -> [a]
-concat :: [[a]] -> [a]
+-- concat :: Foldable t => t [a] -> [a]
+-- concat :: [[a]] -> [a]
 -- Junta sublistas en una sola.
 
-(!!) :: [a] -> Int -> a
+-- (!!) :: [a] -> Int -> a
 -- Es el n-ésimo elemento de la lista.
 
-elem :: (Foldable t, Eq a) => a -> t a -> Bool
-elem :: a -> [a] -> Bool
+-- elem :: (Foldable t, Eq a) => a -> t a -> Bool
+-- elem :: a -> [a] -> Bool
 -- Se pregunta si el elemento a pertenece a la lista dada.
 
 -- Ejercicio 2 : Definir las funciones.
@@ -49,7 +49,7 @@ valorAbsoluto n | n < 0     = abs n
 
 -- b.
 bisiesto :: Int -> Bool
-bisiesto x = (x mod 4 == 0) && (x mod 100 != 0) || (x mod 400 == 0)
+bisiesto x = (mod x 4 == 0) && (mod x 100 /= 0) || (mod x 400 == 0)
 
 -- c.
 factorial :: Int -> Int
@@ -58,31 +58,32 @@ factorial x = x * factorial (x-1)
 
 -- d.
 cantDivisoresPrimos :: Int -> Int
-cantDivisoresPrimos x = contarDivPrimos (x 1 0)
+cantDivisoresPrimos x = contarDivPrimos x 2 0
     where
         contarDivPrimos x div conteo | div > x                       = conteo
-                                     | x mod div == 0 && esPrimo div = contarDivPrimos (x div+1 conteo+1)
-                                     | otherwise                     = contarDivPrimos (x div+1 conteo)
+                                     | mod x div == 0 && esPrimo div = contarDivPrimos x (div+1) (conteo+1)
+                                     | otherwise                     = contarDivPrimos x (div+1) conteo
 esPrimo :: Int -> Bool
 esPrimo x | x <= 1    = False
-          | otherwise = not (esDivisible n 2)
+          | otherwise = not (esDivisible x 2)
     where esDivisible x y | y >= x         = False
                           | x `mod` y == 0 = True
                           | otherwise      = esDivisible x (y+1)
 
 -- Ejercicio 3 : Contamos con los tipos Maybe y Either definidos así:
-data Maybe a = Nothing | Just a
-data Either a b = Left a | Right a
+-- data Maybe2 a = Nothing2 | Just2 a
+-- data Either a b = Left a | Right a
+-- Como ya están definidos en el preludio de Haskell 
 
 -- a. 
 inverso :: Float -> Maybe Float
-inverso x | x != 0    = Just (1/x)
+inverso x | x /= 0    = Just (1/x)
           | otherwise = Nothing
 
 -- b.
 aEntero :: Either Int Bool -> Int
-aEntero Left x  = x
-aEntero Right y = if y then 1 else 0
+aEntero (Left x) = x
+aEntero (Right y) = if y then 1 else 0
 
 -- Ejercicio 4 : Definir las funciones sobre listas.
 -- a. 
@@ -97,7 +98,7 @@ eliminar x (y:ys) = if x == y then eliminar x ys else y : eliminar x ys
 -- b. 
 difPromedio :: [Float] -> [Float]
 difPromedio [] = []
-difPromedio xs = head xs - promedio xs : difPromedio tail xs 
+difPromedio xs = head xs - promedio xs : difPromedio (tail xs) 
 
 promedio :: [Float] -> Float
 promedio [] = 0
@@ -122,10 +123,10 @@ vacioAB _   = False
 -- b.
 negacionAB :: AB Bool -> AB Bool
 negacionAB Nil       = Nil
-negacionAB Bin i r d = Bin (negacionAB i) (not r) (negacionAB d)
+negacionAB (Bin i r d) = Bin (negacionAB i) (not r) (negacionAB d)
 
 -- c. 
 productoAB :: AB Int -> Int
 productoAB Nil       = 1
-productoAB Bin i r d = productoAB i * r * productoAB d
+productoAB (Bin i r d) = productoAB i * r * productoAB d
 

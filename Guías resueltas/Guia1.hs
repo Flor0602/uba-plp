@@ -35,6 +35,7 @@ flipRaro = flip flip
 -- Ver https://stackoverflow.com/questions/54428941/haskell-applying-flip-twice-type-of-flip-flip
 
 -- ii. Indicar cuáles de las funciones anteriores no están currificadas. Para cada una de ellas, definir la función currificada correspondiente. Recordar dar el tipo de la función.
+
 -- Las funciones no currificadas son max2 y normaVectorial.
 -- Versiones currificadas:
 max2v2 :: Float -> Float -> Float
@@ -55,8 +56,8 @@ curry f a b = f (a,b)
 uncurry' :: (a -> b -> c) -> ((a, b) -> c)
 uncurry' f (a,b) = f a b
 
--- iii. ¿Se podría definir una función curryN, que tome una función de un número arbitrario de argumentos y devuelva su versión currificada?
--- Sugerencia: pensar cuál sería el tipo de la función.
+-- iii. ¿Se podría definir una función curryN, que tome una función de un número arbitrario de argumentos y devuelva su versión currificada? Sugerencia: pensar cuál sería el tipo de la función.
+
 -- Si quisiéramos una función curryN que funcione para cualquier número de argumentos, nos enfrentaríamos a la limitación de que Haskell requiere que el número de argumentos de una función esté determinado en tiempo de compilación. 
 -- Es decir, no se puede definir una función curryN con un tipo genérico como: curryN :: ((a, b, c, ...) -> z) -> a -> b -> c -> ... -> z
 
@@ -66,6 +67,7 @@ uncurry' f (a,b) = f a b
 
 -- Ejercicio 3
 -- i. Redefinir usando foldr las funciones sum, elem, (++), filter y map.
+
 sum' :: [Int] -> Int
 sum' = sum
 
@@ -79,8 +81,7 @@ filter' p = foldr (\x rec -> if p x then x:rec else rec) []
 map' :: (a -> b) -> [a] -> [b]
 map' f = map (\x -> f x)
 
--- ii. Definir la función mejorSegún :: (a -> a -> Bool) -> [a] -> a, que devuelve el máximo elemento de la lista según una función de comparación, utilizando foldr1. 
--- Por ejemplo, maximum = mejorSegún (>).
+-- ii. Definir la función mejorSegún :: (a -> a -> Bool) -> [a] -> a, que devuelve el máximo elemento de la lista según una función de comparación, utilizando foldr1. Por ejemplo, maximum = mejorSegún (>).
 
 mejorSegun :: (a -> a -> Bool) -> [a] -> a
 mejorSegun f = foldr1 (\x rec -> if f x rec then x else rec)
@@ -109,30 +110,42 @@ sumaAltreverso = foldl (flip (-)) 0
 -- i. Definir la función permutaciones :: [a] -> [[a]], que dada una lista devuelve todas sus permutaciones. 
 -- Se recomienda utilizar concatMap :: (a -> [b]) -> [a] -> [b], y también take y drop.
 
-
+permutaciones :: [a] -> [[a]]
+permutaciones = recr insertar []
+  where
+    insertar x xs = concatMap (insertarEnPosiciones x)
+    insertarEnPosiciones x [] = [[x]]
+    insertarEnPosiciones x (y:ys) = (x : y : ys) : map (y :) (insertarEnPosiciones x ys)
 
 -- ii. Definir la función partes, que recibe una lista L y devuelve la lista de todas las listas formadas por los mismos elementos de L, en su mismo orden de aparición.
 -- Ejemplo: partes [5, 1, 2] → [[], [5], [1], [2], [5, 1], [5, 2], [1, 2], [5, 1, 2]](en algún orden).
 
-
+partes :: [a] -> [[a]]
+partes = foldr (\x acc -> acc ++ map (x :) acc) [[]]
 
 -- iii. Definir la función prefijos, que dada una lista, devuelve todos sus prefijos.
 -- Ejemplo: prefijos [5, 1, 2] → [[], [5], [5, 1], [5, 1, 2]]
 
-
+prefijos :: [a] -> [[a]]
+prefijos = foldr (\x acc -> [] : map (x :) acc) [[]]
 
 -- iv. Definir la función sublistas que, dada una lista, devuelve todas sus sublistas (listas de elementos que aparecen consecutivos en la lista original).
 -- Ejemplo: sublistas [5, 1, 2] → [[], [5], [1], [2], [5, 1], [1, 2], [5, 1, 2]] (en algún orden).
+
+sublistas :: [a] -> [[a]]
+sublistas = foldr (\x acc -> acc ++ map (x :) acc) [[]]
+
 
 {-
 Ejercicio 5 ⋆
 Considerar las siguientes funciones.
 Indicar si la recursión utilizada en cada una de ellas es o no estructural. Si lo es, reescribirla utilizando foldr.
 En caso contrario, explicar el motivo.
-
-5a. No es recursion estructural porque utiliza xs en el if y al final con tail xs,
-    lo que no garantiza que esté operando directamente sobre la estructura de la lista de forma uniforme en cada paso.
 -}
+
+-- 5a. No es recursion estructural porque utiliza xs en el if y al final con tail xs,
+--     lo que no garantiza que esté operando directamente sobre la estructura de la lista de forma uniforme en cada paso.
+
 
 elementosEnPosicionesPares :: [a] -> [a]
 elementosEnPosicionesPares [] = []
@@ -146,11 +159,14 @@ entrelazar (x:xs) = \ys -> if null ys then x : entrelazar xs [] else x : head ys
 entrelazar2 :: [a] -> [a] -> [a]
 entrelazar2 = foldr (\ x rec ys -> if null ys then x : rec [] else x : head ys : rec (tail ys)) id
 
+
 -- Ejercicio 6 ⋆
 -- El siguiente esquema captura la recursión primitiva sobre listas.
+
 recr :: (a -> [a] -> b -> b) -> b -> [a] -> b
 recr _ z [] = z
 recr f z (x : xs) = f x xs (recr f z xs)
+
 -- a. Definir la función sacarUna :: Eq a => a -> [a] -> [a], que dados un elemento y una lista devuelve el resultado de eliminar de la lista la primera aparición del elemento (si está presente).
 
 sacarUna :: Eq a => a -> [a] -> [a]
@@ -160,7 +176,8 @@ sacarUna y = recr (\x xs rec -> if x == y then xs else x: rec) []
 
 -- Porque quiero trabajar con xs, con foldr o foldl no tengo forma de referenciar a xs.
 
--- c. Definr la función insertarOrdenado :: Ord a => a -> [a] -> [a] que inserta un elemento en una lista ordenada (de manera creciente), de manera que se preserva el ordenamiento.
+-- c. Definir la función insertarOrdenado :: Ord a => a -> [a] -> [a] que inserta un elemento en una lista ordenada (de manera creciente), de manera que se preserva el ordenamiento.
+
 insertarOrdenado :: Ord a => a -> [a] -> [a]
 insertarOrdenado elemento = recr (\x xs rec -> if elemento < x then elemento:x:xs else x: rec) []
 
@@ -169,6 +186,7 @@ Ejercicio 7
 i. Definir la función genLista :: a -> (a -> a) -> Integer -> [a], que genera una lista de una cantidad dada de elementos, a partir de un elemento inicial y de una función de incremento entre los elementos
 de la lista. Dicha función de incremento, dado un elemento de la lista, devuelve el elemento siguiente.
 -}
+
 genLista :: a -> (a -> a) -> Int -> [a]
 genLista _ _ 0           = []
 genLista inicio sig cont = inicio : genLista (sig inicio) sig (cont-1)
@@ -229,6 +247,12 @@ trasponer :: [[Int]] -> [[Int]]
 sumaMat :: [[Int]] -> [[Int]] -> [[Int]]
 sumaMat = zipWith (zipWith (+))
 
+trasponer :: [[Int]] -> [[Int]]
+trasponer [] = []
+trasponer ([]:xs) = trasponer xs
+trasponer ((x:xs):ys) = (x : map head ys) : trasponer (map tail ys)
+
+-- No me salió con esquema de recursión 😔
 
 -- ====================================================================
 --                     OTRAS ESTRUCTURAS DE DATOS
@@ -260,6 +284,7 @@ que, dado un número y un polinomio, devuelve el resultado de evaluar el polinom
 -}
 
 data Polinomio a = X | Cte a | Suma (Polinomio a) (Polinomio a) | Prod (Polinomio a) (Polinomio a)
+
 evaluar :: Num a => a -> Polinomio a -> a
 evaluar n X = n
 evaluar _ (Cte k) = k
@@ -296,6 +321,7 @@ v. Justificar la elección de los esquemas de recursión utilizados para los tre
 -}
 
 data AB a = Nil | Bin (AB a) a (AB a) deriving (Show, Eq)
+
 foldAB :: b -> (b -> a -> b -> b) -> AB a -> b
 foldAB cNil cBin arbol = case arbol of
     Nil -> cNil
@@ -379,6 +405,7 @@ Considerar que la altura de una hoja es 1 y el tamaño de un AIH es su cantidad 
 -}
 
 data AIH a = Hoja a | Bin2 (AIH a) (AIH a)
+
 foldAIH :: (a -> b) -> (b -> b -> b) -> AIH a -> b
 foldAIH cHoja cBin2 arbol = case arbol of
     Hoja a -> cHoja a
@@ -464,7 +491,7 @@ Explicar por qué esta definición no es útil. Dar una definición mejor.
 pitagóricas :: [(Integer, Integer, Integer)]
 pitagóricas = [(a, b, c) | a <- [1..], b <-[1..], c <- [1..], a^2 + b^2 == c^2]
 
--- Esa funciÓn no es Útil ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
+-- Esa función no es útil ya que intenta buscar todas las combinaciones posibles de a, b y c tq cumplen con la prop de Pitagoras, lo cual lo hace muy ineficiente.
 -- Ademas por las 3 leyes de generacion infinita, deberia haber solo un generador infinito.
 -- La lista trata de generar triplas infinitas dentro de otras triplas infinitas, lo cual es computacionalmente imposible y no converge en resultados útiles
 
@@ -491,9 +518,12 @@ mayores o iguales que 1).
 -}
 
 listasfinitas :: [[Int]]
-listasfinitas = concatMap [generarListasDeLongitud n | n <- [0..]]
-            where generarListasDeLongitud 0 = [[]]
-                  generarListasDeLongitud n = [ x:xs | x <- [1..], xs <- generarListasDeLongitud (n-1)]
+listasfinitas = concatMap generarListasDeLongitud [0..]
+
+generarListasDeLongitud :: Int -> [[Int]]
+generarListasDeLongitud 0 = [[]]  
+generarListasDeLongitud n = [x : xs | x <- [1..n], xs <- generarListasDeLongitud (n-1)]  
+
 
 {-
 Ejercicio 22
@@ -508,7 +538,7 @@ aihUnitarios :: [AIH ()]
 aihUnitarios = concat [aihDeAltura n | n <- [0..]]
   where
     aihDeAltura 0 = [Hoja ()]
-    aihDeAltura n = [Nodo l r | l <- aihDeAltura (n-1), r <- aihDeAltura (n-1)]
+    aihDeAltura n = [Bin2 l r | l <- aihDeAltura (n-1), r <- aihDeAltura (n-1)]
 {-
 b) La recursión estructural ocurre cuando una función recursiva llama a sí misma con un 
 subproblema más pequeño derivado de la estructura de los datos de entrada, y la estructura de la recursión 
@@ -518,3 +548,5 @@ No estamos simplemente descomponiendo un árbol grande en árboles más pequeño
 y no hay una reducción directa en el tamaño del árbol en cada paso.
 Por lo tanto, la recursión no sigue estrictamente la estructura de los datos de entrada, ya que estamos generando árboles más grandes y más complejos en cada paso.
 -}
+
+-- ====================================================================
