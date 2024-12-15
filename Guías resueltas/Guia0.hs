@@ -71,9 +71,8 @@ esPrimo x | x <= 1    = False
                           | otherwise      = esDivisible x (y+1)
 
 -- Ejercicio 3 : Contamos con los tipos Maybe y Either definidos así:
--- data Maybe2 a = Nothing2 | Just2 a
+-- data Maybe a = Nothing | Just a
 -- data Either a b = Left a | Right a
--- Como ya están definidos en el preludio de Haskell 
 
 -- a. 
 inverso :: Float -> Maybe Float
