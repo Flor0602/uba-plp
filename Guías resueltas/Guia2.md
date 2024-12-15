@@ -17,7 +17,7 @@
 - [Ejercicio 9](#ejercicio-9)
 - [Ejercicio 10 falta hacer](#ejercicio-10)
 - [Ejercicio 11 falta hacer](#ejercicio-11)
-- [Ejercicio 12](#ejercicio-12)
+- [Ejercicio 12 incompleto](#ejercicio-12)
 
 
 
@@ -448,9 +448,9 @@ P(xs): ∀ x::a . head (reverse (ponerAlFinal x xs)) = x
 Caso base: P([])
 
 head (reverse (ponerAlFinal x []))
-= head (reverse (foldr (:) (x:[]) [])               (P0)
+= head (reverse (foldr (:) (x:[]) []))              (P0)
 = head (reverse (x:[]))                             (def foldr)
-= head (foldr (\x rec -> rec ++ (x:[])) [] (x:[])   (por ejercicio anterior)
+= head (foldr (\x rec -> rec ++ (x:[])) [] (x:[]))   (por ejercicio anterior)
 = head ((\x rec -> rec ++ (x:[])) x (foldr (\x rec -> rec ++ (x:[])) [] []))   (def foldr)
 = head ((\x rec -> rec ++ (x:[])) x [])
 = head ([] ++ (x:[]))                               (regla beta)
@@ -467,7 +467,7 @@ head (reverse (ponerAlFinal x (y:xs)))
 = head (reverse ((:) y (foldr (:) (x:[]) xs)))      (def foldr)
 = head (reverse ((:) y (ponerAlFinal x xs)))        (P0)
 = head (reverse ((:) y (xs ++ (x:[]))))             (por ejercicio 3.VI)
-= head (reverse (y : (xs ++ [x])
+= head (reverse (y : (xs ++ [x])))
 = head (reverse ((y:xs) ++ [x]))
 = head (reverse [x] ++ reverse (y:xs))              (Lema 1)
 = head ([x] ++ reverse (y:xs))                      (def reverse)
@@ -517,7 +517,7 @@ Caso base: P([x])
 
 head ([x] ++ ys)
 = head (foldr (:) ys [x])                    (++)
-= head ((:) x (foldr (:) ys [])              (def foldr)
+= head ((:) x (foldr (:) ys []))              (def foldr)
 = head ((:) x ys)
 = head (x:ys)
 = x                                          (def head)
@@ -541,6 +541,39 @@ Por lo tanto, la propiedad vale para ∀ xs :: [a].
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 4
+Demostrar las siguientes propiedades utilizando inducción estructural sobre listas y el principio de extensionalidad.
+#### I. reverse . reverse = id
+```
+Por inducción de listas sobre xs, necesitamos probar que:
+P(xs): reverse (reverse xs) = xs
+
+Caso base: xs = []
+reverse (reverse []) = reverse [] = [] = []
+
+Caso recursivo: xs = y : ys
+
+Supongamos que P(ys) se cumple, es decir, reverse (reverse ys) = ys.
+Ahora, debemos demostrar que reverse (reverse (y : ys)) = y : ys
+
+reverse (reverse (y : ys)) 
+= reverse (y : reverse ys)                  (def. reverse)
+= reverse (reverse ys ++ [y])               (prop. reverse sobre listas)
+= reverse [y] ++ reverse (reverse ys)       (prop. reverse)
+= [y] ++ ys                                 (HI)
+= y : ys  
+
+Por lo tanto, la propiedad vale para ∀ xs.
+```
+#### II. append = (++)
+
+#### III. map id = id
+
+#### IV. ∀ f::a->b . ∀ g::b->c . map (g . f) = map g . map f
+
+#### V. ∀ f::a->b . ∀ p::b->Bool . map f . filter (p . f) = filter p . map f
+
+#### VI. ∀ f::a->b . ∀ e::a . ∀ xs::[a] . ((elem e xs) ⇒ (elem (f e) (map f xs))) (Asumiendo Eq a y Eq b)
+
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
@@ -915,10 +948,18 @@ Por lo tanto, la propiedad vale para ∀ xs :: [a].
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 7
+Dadas las definiciones usuales de foldr y foldl, demostrar las siguientes propiedades:
+
+#### I. ∀ f::a->b->b . ∀ z::b . ∀ xs, ys::[a] . foldr f z (xs ++ ys) = foldr f (foldr f z ys) xs
+
+#### II. ∀ f::b->a->b . ∀ z::b . ∀ xs, ys::[a] . foldl f z (xs ++ ys) = foldl f (foldl f z xs) ys
+
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 8
+Demostrar que la función potencia definida en la práctica 1 usando foldNat funciona correctamente mediante inducción en el exponente.
+
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
@@ -976,10 +1017,41 @@ Por lo tanto, la propiedad vale para ∀ t :: AB a.
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 10
+Dada la siguiente función:
+```haskell
+     truncar :: AB a -> Int -> AB a
+{T0} truncar Nil \_ = Nil
+{T1} truncar (Bin i r d) n = if n == 0 then Nil else Bin (truncar i (n-1)) r (truncar d (n-1))
+```
+Y los siguientes lemas:
+
+1. ∀ x::Int . ∀ y::Int . ∀ z::Int . max (min x y) (min x z) = min x (max y z)
+2. ∀ x::Int . ∀ y::Int . ∀ z::Int . z + min x y = min (z+x) (z+y)
+
+Demostrar las siguientes propiedades:
+
+#### I. ∀ t :: AB a . altura t ≥ 0
+
+#### II. ∀ t::AB a . ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar t n) = min n (altura t)))
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
 ### Ejercicio 11
+
+Considerar las siguientes funciones:
+
+```haskell
+     inorder :: AB a -> [a]
+{I0} inorder = foldAB [] (\ri x rd -> ri ++ (x:rd))
+     elemAB :: Eq a => a -> AB a -> Bool
+{A0} elemAB e = foldAB False (\ri x rd -> (e == x) || ri || rd)
+     elem :: Eq a => [a] -> Bool
+{E0} elem e = foldr (\x rec -> (e == x) || rec) False
+```
+
+Demostrar la siguiente propiedad:
+#### Eq a => ∀ e::a . elemAB e = elem e . inorder
+
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
