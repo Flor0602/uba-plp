@@ -14,9 +14,9 @@
   - [Práctica 8:](https://github.com/Flor0602/plp/blob/main/Gu%C3%ADas%20resueltas/Guia8.pl) Programación lógica ✅
   - [Práctica 9:]() Programación orientada a objetos
     
-## Clases teóricas
+## [Clases teóricas](./Teoricas/)
   
-## Clases prácticas
+## [Clases prácticas](./Practicas/)
 
 ## Parciales resueltos
 
