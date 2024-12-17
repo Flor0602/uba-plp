@@ -15,7 +15,7 @@
   - [Práctica 9:]() Programación orientada a objetos
     
 ## Clases teóricas
-
+  
 ## Clases prácticas
 
 ## Parciales resueltos
