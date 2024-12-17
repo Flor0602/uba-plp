@@ -10,7 +10,7 @@
 - [Ejercicio 4](#ejercicio-4) ✔️
 - [Ejercicio 5](#ejercicio-5) ✔️
 - [Ejercicio 6](#ejercicio-6) ✔️
-- [Ejercicio 7 falta hacer](#ejercicio-7)
+- [Ejercicio 7](#ejercicio-7) ✔️
 ## Otras estructuras de datos
 
 - [Ejercicio 8 falta hacer](#ejercicio-8)
@@ -1173,11 +1173,64 @@ Por lo tanto, la propiedad vale para ∀ xs :: [a].
 
 ### Ejercicio 7
 Dadas las definiciones usuales de foldr y foldl, demostrar las siguientes propiedades:
+```haskell
+{R0} foldr f z [] = z
+{R1} foldr f z (x:xs) = f x (foldr f z xs)
 
-#### I. ∀ f::a->b->b . ∀ z::b . ∀ xs, ys::[a] . foldr f z (xs ++ ys) = foldr f (foldr f z ys) xs
+{L0} foldl f z [] = z
+{L1} foldl f z (x:xs) = foldl f (f z x) xs
+```
+
+#### I. ∀ f::a->b->b. ∀ z::b. ∀ xs, ys::[a]. foldr f z (xs ++ ys) = foldr f (foldr f z ys) xs
+```
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ f::a->b->b . ∀ z::b . ∀ ys::[a] . foldr f z (xs ++ ys) = foldr f (foldr f z ys) xs
+
+Caso base: P([])
+foldr f z ([] ++ ys)
+= foldr f z ys                (++)
+= foldr f (foldr f z ys) []   (foldr)
+
+Caso recursivo: xs = w:ws
+
+∀w :: a. ∀ws :: [a]. P(ws) ⇒ P(w:ws).
+Supongamos que P(ws) se cumple, es decir, ∀ f::a->b->b. ∀ z::b. ∀ ys::[a]. foldr f z (ws ++ ys) = foldr f (foldr f z ys) ws.
+Ahora, debemos demostrar que ∀ f::a->b->b . ∀ z::b . ∀ xs, ys::[a] . foldr f z ((w:ws) ++ ys) = foldr f (foldr f z ys) (w:ws).
+
+Lado izquierdo:
+foldr f z ((w:ws) ++ ys)
+= foldr f z (w : (ws ++ ys))         (++)
+= f w (foldr f z (ws ++ ys))         (foldr)
+= f w (foldr f (foldr f z ys) ws)    (HI)
+= foldr f (foldr f z ys) (w:ws)      (foldr)
+
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
 
 #### II. ∀ f::b->a->b . ∀ z::b . ∀ xs, ys::[a] . foldl f z (xs ++ ys) = foldl f (foldl f z xs) ys
+```
+Por inducción de listas sobre xs necesito probar que:
+∀ xs::[a]. P(xs): ∀ f::b->a->b . ∀ z::b . ∀ ys::[a] . foldl f z (xs ++ ys) = foldl f (foldl f z xs) ys.
 
+Caso base: P([])
+foldl f z ([] ++ ys)
+= foldl f z ys                (++)
+= foldl f (foldl f z []) ys   (foldl)
+
+Caso recursivo: xs = w:ws
+
+∀w :: a. ∀ws :: [a]. P(ws) ⇒ P(w:ws).
+Supongamos que P(ws) se cumple, es decir, ∀ f::b->a->b . ∀ z::b . ∀ ys::[a] . foldl f z (ws ++ ys) = foldl f (foldl f z ws) ys.
+Ahora, debemos demostrar que ∀ f::b->a->b . ∀ z::b . ∀ ys::[a] . foldl f z ((w:ws) ++ ys) = foldl f (foldl f z (w:ws)) ys.
+
+foldl f z ((w:ws) ++ ys)
+= foldl f z (w : (ws ++ ys))        (++)
+= foldl f (f z w) (ws ++ ys)        (foldl)
+= foldl f (foldl f (f z w) ws) ys   (HI)
+= foldl f (foldl f z (w:ws)) ys     (foldl)
+
+Por lo tanto, la propiedad vale para ∀ xs :: [a].
+```
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
