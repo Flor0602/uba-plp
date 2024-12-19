@@ -17,7 +17,7 @@
 - [Ejercicio 9](#ejercicio-9) ✔️
 - [Ejercicio 10](#ejercicio-10) ✔️
 - [Ejercicio 11](#ejercicio-11) ✔️
-- [Ejercicio 12 incompleto](#ejercicio-12)
+- [Ejercicio 12](#ejercicio-12) ✔️
 
 
 
@@ -1619,44 +1619,56 @@ Como ya demostré que la proposición se cumple para todos los casos.
 Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
 ```
 
-#### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
+#### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p ⇒ sinConstantesNegativas (derivado p))
 ```
 Si Num a = False, False implica cualquier cosa.
 Asumo que vale Num a.
 
 Utilizo inducción estructural sobre polinomios, necesito ver que:
-∀ p::Polinomio a. P(p): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
+∀ p::Polinomio a. P(p): (sinConstantesNegativas p ⇒ sinConstantesNegativas (derivado p))
 
 Casos base:
 - P(X)
 
-Lado izquierdo:
-
-
-Lado derecho:
-
+(sinConstantesNegativas X ⇒ sinConstantesNegativas (derivado X))
+= foldPoli True (>=0) (&&) (&&) X ⇒ sinConstantesNegativas (Cte 1)    (derivado y def sCN)
+= True ⇒ foldPoli True (>=0) (&&) (&&) (Cte 1)                        (foldPoli y def sCN)
+= True ⇒ True                                                         (foldPoli)
+= True                                   
 
 - P(Cte c)
 
-Lado izquierdo:
+(sinConstantesNegativas (Cte c) ⇒ sinConstantesNegativas (derivado (Cte c)))
+= foldPoli True (>=0) (&&) (&&) (Cte c) ⇒ sinConstantesNegativas (Cte 0)        (derivado y def sCN)
+= (>=0) c ⇒ foldPoli True (>=0) (&&) (&&) (Cte 0)                               (foldPoli y def sCN)
+= (>=0) c ⇒ (>=0) 0                                                             (foldPoli)
+= (>=0) c ⇒ True
 
+Si (>=0) c = True, entonces
+= True ⇒ True
+= True 
 
-Lado derecho:
-
+Si r == 0 = False, entonces
+False ⇒ cualquier cosa
 
 Caso recursivo:
 - ∀ s, t::Polinomio a. ∀ r::a . (P(s) y P(t)) ⇒ P(Suma s t)
 
-P(Suma s t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) (Suma s t))) = evaluar e (Prod (Cte k) (derivado (Suma s t))).
+P(Suma s t): (sinConstantesNegativas (Suma s t) ⇒ sinConstantesNegativas (derivado (Suma s t))).
 H.I.:
-P(s): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) s)) = evaluar e (Prod (Cte k) (derivado s)).
-P(t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) t)) = evaluar e (Prod (Cte k) (derivado t)).
+P(s): (sinConstantesNegativas s ⇒ sinConstantesNegativas (derivado s)).
+P(t): (sinConstantesNegativas t ⇒ sinConstantesNegativas (derivado t)).
 
-Lado izquierdo:
+sinConstantesNegativas (Suma s t) ⇒ sinConstantesNegativas (derivado (Suma s t))
+= foldPoli True (>=0) (&&) (&&) (Suma s t) ⇒ sinConstantesNegativas (Suma (derivado s) (derivado t))               (derivado y def sCN)
+= foldPoli True (>=0) (&&) (&&) (Suma s t) ⇒ foldPoli True (>=0) (&&) (&&) (Suma (derivado s) (derivado t))        (def sCN)
+= (foldPoli True (>=0) (&&) (&&) s && foldPoli True (>=0) (&&) (&&) t) ⇒ foldPoli True (>=0) (&&) (&&) (Suma (derivado s) (derivado t))       (foldPoli)
+= (foldPoli True (>=0) (&&) (&&) s && foldPoli True (>=0) (&&) (&&) t) ⇒ foldPoli True (>=0) (&&) (&&) (derivado s) && foldPoli True (>=0) (&&) (&&) (derivado t)    (foldPoli)
+= (sinConstantesNegativas s && sinConstantesNegativas t) ⇒ (sinConstantesNegativas (derivado s) && sinConstantesNegativas (derivado t))       (def sCN x4)
 
-
-Lado derecho:
-
+Por la distributiva de la implicación: (A ∧ B) ⇒ (C ∧ D) es equivalente a (A ⇒ C) ∧ (B ⇒ D)
+= (sinConstantesNegativas s ⇒ sinConstantesNegativas (derivado s)) && (sinConstantesNegativas t ⇒ sinConstantesNegativas (derivado t))
+Y esto último vale por HI.
 
 Lo mismo para P(Prod p q)
 
@@ -1665,8 +1677,9 @@ Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
 ```
 
 #### IV. La recursión utilizada en la definición de la función derivado ¿es estructural, primitiva o ninguna de las dos?
-
-
+```
+La recursión utilizada en la definición de derivado es estructural porque se basa en el tipo de datos del polinomio, aplicando recursión sobre sus componentes (como los subpolinomios p y q en el caso de Suma y Prod).
+```
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
