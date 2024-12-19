@@ -1553,28 +1553,65 @@ Si Num a = False, False implica cualquier cosa.
 Asumo que vale Num a.
 
 Utilizo inducción estructural sobre polinomios, necesito ver que:
-∀ p::Polinomio a. P(p): 
+∀ p::Polinomio a. P(p): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
 
 Casos base:
 - P(X)
 
+Lado izquierdo:
+evaluar e (derivado (Prod (Cte k) X))
+= evaluar e (Suma (Prod (derivado (Cte k)) X) (Prod (derivado X) (Cte k)))      (derivado)
+= evaluar e (Suma (Prod (Cte 0) X) (Prod (Cte 1) (Cte k)))                      (derivado)
+= evaluar e (Suma (Cte 0) (Cte k))                                              
+= evaluar e (Cte k)                                                             (evaluar)
+= k
 
+Lado derecho:
+evaluar e (Prod (Cte k) (derivado X))        (derivado)
+= evaluar e (Prod (Cte k) (Cte 1))
+= evaluar e (Cte k)                          (evaluar)
+= k
 
+- P(Cte c)
 
+Lado izquierdo:
+evaluar e (derivado (Prod (Cte k) (Cte c)))
+= evaluar e (Suma (Prod (derivado (Cte k)) (Cte c)) (Prod (derivado (Cte c)) (Cte k)))
+= evaluar e (Suma (Prod (Cte 0) (Cte c)) (Prod (Cte 0) (Cte k)))
+= evaluar e (Suma (Cte 0) (Cte 0))
+= evaluar e (Cte 0) 
+= 0
 
-
-- P(Cte a)
-
-
+Lado derecho:
+evaluar e (Prod (Cte k) (derivado c))
+= evaluar e (Prod (Cte k) (Cte 0)) 
+= k * 0 
+= 0
 
 Caso recursivo:
-- ∀ p, s::Polinomio a. ∀ r::a . (P(p) y P(s)) ⇒ P(Suma p s)
+- ∀ s, t::Polinomio a. ∀ r::a . (P(s) y P(t)) ⇒ P(Suma s t)
 
+P(Suma s t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) (Suma s t))) = evaluar e (Prod (Cte k) (derivado (Suma s t))).
 H.I.:
-P(p): ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
-P(s): ∀ q::Polinomio a . ∀ r::a . (esRaiz r s ⇒ esRaiz r (Prod s q))
+P(s): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) s)) = evaluar e (Prod (Cte k) (derivado s)).
+P(t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) t)) = evaluar e (Prod (Cte k) (derivado t)).
 
+Lado izquierdo:
+evaluar e (derivado (Prod (Cte k) (Suma s t)))
+= evaluar e (Suma (Prod (derivado (Cte k)) (Suma s t)) (Prod (derivado (Suma s t)) (Cte k)))        (derivado)
+= evaluar e (Suma (Prod (Cte 0) (Suma s t)) (Prod (Suma (derivado s) (derivado t)) (Cte k)))        (derivado)
+= evaluar e (Suma (Cte 0) (Prod (Suma (derivado s) (derivado t)) (Cte k)))      
+= evaluar e (Cte 0) + evaluar e (Prod (Suma (derivado s) (derivado t)) (Cte k))
+= 0 + evaluar e (Suma (derivado s) (derivado t)) * evaluar e (Cte k)                 (evaluar)
+= evaluar e (Suma (derivado s) (derivado t)) * k                                     (evaluar)
+= (evaluar e (derivado s) + evaluar e (derivado t)) * k
 
+Lado derecho:
+evaluar e (Prod (Cte k) (derivado (Suma s t)))
+= evaluar e (Prod (Cte k) (Suma (derivado s) (derivado t)))           (derivado)
+= evaluar e (Cte k) * evaluar e (Suma (derivado s) (derivado t))
+= k * (evaluar e (derivado s) + evaluar e (derivado t))               (evaluar)
+= (evaluar e (derivado s) + evaluar e (derivado t)) * k
 
 Lo mismo para P(Prod p q)
 
@@ -1588,7 +1625,43 @@ Si Num a = False, False implica cualquier cosa.
 Asumo que vale Num a.
 
 Utilizo inducción estructural sobre polinomios, necesito ver que:
+∀ p::Polinomio a. P(p): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) p)) = evaluar e (Prod (Cte k) (derivado p))
 
+Casos base:
+- P(X)
+
+Lado izquierdo:
+
+
+Lado derecho:
+
+
+- P(Cte c)
+
+Lado izquierdo:
+
+
+Lado derecho:
+
+
+Caso recursivo:
+- ∀ s, t::Polinomio a. ∀ r::a . (P(s) y P(t)) ⇒ P(Suma s t)
+
+P(Suma s t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) (Suma s t))) = evaluar e (Prod (Cte k) (derivado (Suma s t))).
+H.I.:
+P(s): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) s)) = evaluar e (Prod (Cte k) (derivado s)).
+P(t): ∀ k::a . ∀ e::a. evaluar e (derivado (Prod (Cte k) t)) = evaluar e (Prod (Cte k) (derivado t)).
+
+Lado izquierdo:
+
+
+Lado derecho:
+
+
+Lo mismo para P(Prod p q)
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
 ```
 
 #### IV. La recursión utilizada en la definición de la función derivado ¿es estructural, primitiva o ninguna de las dos?
