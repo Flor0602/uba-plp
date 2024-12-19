@@ -549,4 +549,5 @@ y no hay una reducción directa en el tamaño del árbol en cada paso.
 Por lo tanto, la recursión no sigue estrictamente la estructura de los datos de entrada, ya que estamos generando árboles más grandes y más complejos en cada paso.
 -}
 
+
 -- ====================================================================

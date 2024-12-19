@@ -13,10 +13,10 @@
 - [Ejercicio 7](#ejercicio-7) ✔️
 ## Otras estructuras de datos
 
-- [Ejercicio 8 falta hacer](#ejercicio-8)
-- [Ejercicio 9](#ejercicio-9)
-- [Ejercicio 10 falta hacer](#ejercicio-10)
-- [Ejercicio 11 falta hacer](#ejercicio-11)
+- [Ejercicio 8](#ejercicio-8) ✔️
+- [Ejercicio 9](#ejercicio-9) ✔️
+- [Ejercicio 10](#ejercicio-10) ✔️
+- [Ejercicio 11](#ejercicio-11) ✔️
 - [Ejercicio 12 incompleto](#ejercicio-12)
 
 
@@ -1121,6 +1121,7 @@ En el caso e == z, sabemos que e está en la intersección (intersect xs ys) por
 Como ya demostré que la proposición se cumple para todos los casos.
 Por lo tanto, la propiedad vale para ∀ xs :: [a].
 ```
+
 #### V. Eq a => ∀ xs::[a] . ∀ ys::[a] . length (union xs ys) = length xs + length ys
 ```
 Contraejemplo:
@@ -1236,7 +1237,38 @@ Por lo tanto, la propiedad vale para ∀ xs :: [a].
 
 ### Ejercicio 8
 Demostrar que la función potencia definida en la práctica 1 usando foldNat funciona correctamente mediante inducción en el exponente.
+```haskell
+foldNat :: b -> (b -> b) -> Integer -> b
+foldNat cZero cSuc n
+    | n == 0    = cZero
+    | otherwise = cSuc (foldNat cZero cSuc (n - 1))
 
+potencia :: Integer -> Integer -> Integer
+potencia n = foldNat 1 (* n) -- Es n^k   
+```
+Demostración:
+```
+Por inducción estructural sobre k necesito probar que:
+∀ k k ∈ ℕ. P(k): potencia n k = n^k
+
+Caso base: P(0)
+potencia n 0 = 1 = n^0 
+
+Caso recursivo: P(k+1)
+
+Hipótesis Inductiva (HI):
+∀ n, Para algún k: potencia n k = n^k
+Tesis Inductiva:
+Probar que potencia n (k+1) = n^(k+1)
+Demostración:
+potencia n (k+1)
+= (* n) (potencia n k)
+= n * (n^k)                   (HI)
+= n^(k+1)     
+
+Por principio de inducción estructural,
+∀ k ∈ ℕ, ∀ n: potencia n k = n^k
+```
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
@@ -1309,7 +1341,62 @@ Demostrar las siguientes propiedades:
 
 #### I. ∀ t :: AB a . altura t ≥ 0
 
+```
+Utilizo induccion estructural en arboles binarios.
+∀ t :: AB a. P(t): altura t ≥ 0.
+
+Caso base: P(Nil)
+
+altura Nil = 0 ≥ 0            (def altura y prop de int)
+
+Caso recursivo: ∀i :: AB a. ∀r :: a. ∀d :: AB a. P(i) ∧ P(d) ⇒ P(Bin i r d)
+H.I.:
+∀ i :: AB a. P(i): altura i ≥ 0.
+∀ d :: AB a. P(d): altura d ≥ 0.
+Qvq ∀ t :: AB a. P(Bin i r d): altura (Bin i r d) ≥ 0.
+
+altura (Bin i r d)
+= foldAB 0 (\ri _ rd -> 1 + max ri rd) (Bin i r d)   (def altura)
+= 1 + max (altura i) (altura d)                      (regla beta)
+≥ 1 + max 0 0                                        (HI)
+= 1
+≥ 0.
+
+Por lo tanto, la propiedad vale para ∀ t :: AB a.
+```
+
 #### II. ∀ t::AB a . ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar t n) = min n (altura t)))
+
+```
+Utilizo induccion estructural en arboles binarios.
+∀ t :: AB a. P(t): ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar t n) = min n (altura t)))
+Aclaración: Si n < 0, entonces false implica cualquier cosa. Asumo que n ≥ 0.
+
+Caso base: P(Nil)
+
+altura (truncar Nil n)
+= altura Nil             (T0)
+= 0                      (def altura)
+= min n 0                (def minimo)
+= min n (altura Nil)     
+
+Caso recursivo: ∀i :: AB a. ∀r :: a. ∀d :: AB a. P(i) ∧ P(d) ⇒ P(Bin i r d)
+H.I.:
+∀ i :: AB a. P(i): ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar i n) = min n (altura i))).
+∀ d :: AB a. P(d): ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar d n) = min n (altura d))).
+Qvq ∀ t :: AB a. P(Bin i r d): ∀ n::Int . (n ≥ 0 ⇒ (altura (truncar (Bin i r d) n) = min n (altura (Bin i r d)))).
+
+altura (truncar (Bin i r d) n)
+= altura (if n == 0 then Nil else Bin (truncar i (n-1)) r (truncar d (n-1)))                  (T1)
+= if n == 0 then altura Nil else altura (Bin (truncar i (n-1)) r (truncar d (n-1)))            
+(DUDA: NO SE SI SE PUEDE HACER ESTO)
+= if n == 0 then 0 else 1 + max (altura (truncar i (n-1))) (altura (truncar d (n-1)))         (def altura)
+= if n == 0 then 0 else 1 + max (min (n-1) (altura i)) (min (n-1) (altura d))                 (HI)
+= min n (1 + max (altura i) (altura d))                                                       (lema 1)
+= min n (altura (Bin i r d)).
+
+Por lo tanto, la propiedad vale para ∀ t :: AB a.
+```
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
@@ -1327,8 +1414,54 @@ Considerar las siguientes funciones:
 ```
 
 Demostrar la siguiente propiedad:
+
 #### Eq a => ∀ e::a . elemAB e = elem e . inorder
 
+```
+Utilizo induccion estructural en arboles binarios.
+∀ t :: AB a. P(t): ∀ e::a . elemAB e = elem e . inorder
+Aclaración: Si no vale Eq a, entonces false implica cualquier cosa. Asumo Eq a.
+
+Caso base: P(Nil)
+
+elemAB e Nil
+= foldAB False (\ri x rd -> (e == x) || ri || rd) Nil  (A0)
+= False                                                (def foldAB)
+= foldr (\x rec -> (e == x) || rec) False []           (E0)
+= elem e []                                            (def foldAB para Nil)
+= elem e (foldAB [] (\ri x rd -> ri ++ (x:rd)) Nil)    (I0)
+= elem e (inorder Nil)                                 (def .)
+= (elem e . inorder) Nil
+
+Caso recursivo: ∀i :: AB a. ∀r :: a. ∀d :: AB a. P(i) ∧ P(d) ⇒ P(Bin i r d)
+H.I.:
+∀ i :: AB a. P(i): ∀ e :: a. elemAB e i = elem e (inorder i).
+∀ d :: AB a. P(d): ∀ e :: a. elemAB e d = elem e (inorder d).
+Qvq ∀ t :: AB a. P(Bin i r d): ∀ e :: a. elemAB e (Bin i r d) = elem e (inorder (Bin i r d)).
+
+Lado izquierdo:
+elemAB e (Bin i r d)
+= foldAB False (\ri x rd -> (e == x) || ri || rd) (Bin i r d)  (A0)
+= (\ri x rd -> (e == x) || ri || rd) (foldAB False (\ri x rd -> (e == x) || ri || rd) i) r (foldAB False (\ri x rd -> (e == x) || ri || rd) d)
+= (\ri x rd -> (e == x) || ri || rd) (elemAB e i) r (elemAB e d)       (A0)
+= (e == r) || (elemAB e i) || (elemAB e d)                             (regla beta)
+
+Lado derecho:
+(elem e . inorder) (Bin i r d)
+= elem e (inorder (Bin i r d))                                   (def .)
+= elem e (foldAB [] (\ri x rd -> ri ++ (x:rd)) (Bin i r d))      (I0)
+= elem e ((\ri x rd -> ri ++ (x:rd)) (inorder i) r (inorder d))  (def foldAB)
+= elem e (inorder i ++ (r:inorder d))
+= foldr (\y rec -> (e == y) || rec) False (inorder i ++ (r:inorder d)) (E0)
+
+Aplicando la prop de foldr sobre listas concatenadas:
+= foldr (\y rec -> (e == y) || rec) False (inorder i) || (e == r) || foldr (\y rec -> (e == y) || rec) False (inorder d)
+= (elem e (inorder i)) || (e == r) || (elem e (inorder d))
+= (elemAB e i) || (e == r) || (elemAB e d).                 (HI)
+
+
+Por lo tanto, la propiedad vale para ∀ t :: AB a.
+```
 
 [Volver al indice](#práctica-2---razonamiento-ecuacional-e-inducción-estructural)
 
@@ -1394,6 +1527,7 @@ False ⇒ cualquier cosa
 
 Caso recursivo:
 - ∀ p, s::Polinomio a. ∀ r::a . (P(p) y P(s)) ⇒ P(Suma p s)
+
 H.I.:
 P(p): ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
 P(s): ∀ q::Polinomio a . ∀ r::a . (esRaiz r s ⇒ esRaiz r (Prod s q))
@@ -1402,12 +1536,8 @@ esRaiz r (Suma p s) ⇒ esRaiz r (Prod (Suma p s) q)
 = evaluar r (Suma p s) == 0 ⇒ (evaluar r (Suma p s) * evaluar r q) == 0
 = (evaluar r p + evaluar r s) == 0  ⇒ ((evaluar r p + evaluar r s) * evaluar r q) == 0
 
-No sé si está bien...
-Si evaluar r p == 0, i.e. esRaiz r p ⇒ esRaiz r (Prod p q)
-= (0 + evaluar r s) == 0  ⇒ ((0 + evaluar r s) * evaluar r q) == 0
-y si evaluar r s == 0, i.e. esRaiz r s ⇒ esRaiz r (Prod s q)
-= (0 + 0) == 0  ⇒ ((0 + 0) * evaluar r q) == 0
-Queda:
+Si (evaluar r p + evaluar r s) == 0, entonces
+= True  ⇒ (0 * evaluar r q) == 0
 = True ⇒ 0 == 0
 = True
 
@@ -1423,9 +1553,43 @@ Si Num a = False, False implica cualquier cosa.
 Asumo que vale Num a.
 
 Utilizo inducción estructural sobre polinomios, necesito ver que:
+∀ p::Polinomio a. P(p): 
+
+Casos base:
+- P(X)
+
+
+
+
+
+
+- P(Cte a)
+
+
+
+Caso recursivo:
+- ∀ p, s::Polinomio a. ∀ r::a . (P(p) y P(s)) ⇒ P(Suma p s)
+
+H.I.:
+P(p): ∀ q::Polinomio a . ∀ r::a . (esRaiz r p ⇒ esRaiz r (Prod p q))
+P(s): ∀ q::Polinomio a . ∀ r::a . (esRaiz r s ⇒ esRaiz r (Prod s q))
+
+
+
+Lo mismo para P(Prod p q)
+
+Como ya demostré que la proposición se cumple para todos los casos.
+Por lo tanto, la propiedad vale para ∀ p::Polinomio a.
+```
+
+#### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
+```
+Si Num a = False, False implica cualquier cosa.
+Asumo que vale Num a.
+
+Utilizo inducción estructural sobre polinomios, necesito ver que:
 
 ```
-#### III. Num a => ∀ p::Polinomio a. (sinConstantesNegativas p⇒sinConstantesNegativas (derivado p))
 
 #### IV. La recursión utilizada en la definición de la función derivado ¿es estructural, primitiva o ninguna de las dos?
 
